@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/mediator.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/ahrensde/pile.js.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~Bottom.html">Bottom</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~LocalStorageBottom.html">LocalStorageBottom</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~RedisBottom.html">RedisBottom</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bucket.js~Bucket.html">Bucket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dumpster_diver.js~DumpsterDiver.html">DumpsterDiver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~ForeignKeyProperty.html">ForeignKeyProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html">Mediator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~Property.html">Property</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~ToManyProperty.html">ToManyProperty</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/mediator.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&quot;use strict&quot;;
+
+import EventEmitter from &apos;events&apos;;
+import { generate } from &apos;shortid&apos;;
+
+
+/**
+ * Clones an object with stringify to JSON and returning the parsed result.
+ */
+function clone(o) { return JSON.parse(JSON.stringify(o)) }
+
+
+/**
+ * Mediators know how to persist their data into JSON.
+ *
+ * They also fire events for Buckets to listen on changes.
+ */
+export class Mediator extends EventEmitter {
+  /**
+   * @data The initial data on construction
+   * @properties Informations about properties with possible related objects
+   */
+  constructor(data, properties) {
+    super();
+
+    this.data = { id: generate(), model: &apos;default&apos; }
+
+    this.properties = new Map();
+    for (var prop in properties) {
+      this.properties.set(prop, properties[prop])
+    }
+
+    for (let prop in data) {
+      let value = data[prop];
+      if (this.properties.has(prop)) {
+        let property = this.properties.get(value);
+        if (property instanceof ForeignKeyProperty) {
+          this.data[prop] = value._id;
+          property.set(value);
+        }
+      } else {
+        this.data[prop] = data[prop];
+      }
+    }
+
+    var _id = this.data[&apos;model&apos;] + &apos;:&apos; + this.data[&apos;id&apos;]
+    Object.defineProperty(this, &apos;_id&apos;, { writable: false, value: _id });
+
+    for(let prop in this.data) {
+      if (prop == &apos;id&apos; || prop == &apos;model&apos;) {
+        Object.defineProperty(this, prop,
+          {
+            writable: false,
+            value: this.data[prop]
+          });
+      } else {
+        Object.defineProperty(this, prop,
+          {
+            get: function() { return this._get(prop); },
+            set: function(value) { this._set(prop, value); }
+          });
+      }
+    }
+  }
+
+  load(prop, done) {
+    var me = this;
+    let property = me.properties.get(prop);
+    if (!property.loaded) {
+      this._bucket.get(me.data[prop], function(err, obj) {
+        property.value = obj
+        property.loaded = true
+        me.properties.set(prop, property)
+        done.call(me);
+      })
+    } else {
+      done.call(me);
+    }
+  }
+
+  /**
+   * Getter method that is aware subobjects.
+   */
+  _get(prop) {
+    if (this.properties.has(prop)) {
+      let property = this.properties.get(prop);
+      return property.value;
+    } else {
+      return this.data[prop]
+    }
+  }
+
+  /**
+   * Setter method for instance properties.
+   */
+  _set(prop, value) {
+    if (this.properties.has(prop) &amp;&amp; !value) {
+      let property = this.properties.get(prop)
+      property.value = value
+      this.data[prop] = value;
+    } else {
+      if (this.data[prop] !== value) {
+        var old = clone(this.data);
+        this.data[prop] = value;
+        this.emit(&apos;changed&apos;, this, old);
+      }
+    }
+  }
+
+  /**
+   * Returns the underlying data object as json string.
+   */
+  toJSON() { return JSON.stringify(this.data); }
+}
+
+
+/**
+ * Properties define special behaviours for data
+ * that is bound to Mediators.
+ */
+export class Property extends EventEmitter {
+  constructor() {
+    super();
+  }
+}
+
+
+/**
+ * A Junction to another Mediator.
+ */
+export class ForeignKeyProperty extends Property {
+  constructor() {
+    super();
+  }
+}
+
+
+/**
+ * Many Junctions to other Mediators.
+ */
+export class ToManyProperty extends Property {
+  constructor() {
+    super();
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.5)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

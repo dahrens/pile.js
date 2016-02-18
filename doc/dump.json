@@ -1,0 +1,1342 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/bottom.js",
+    "memberof": null,
+    "longname": "src/bottom.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "\"use strict\";\n\n\n/**\n * A Bottom is the persistence layer of a Bucket.\n */\nexport class Bottom {\n  constructor() {\n\n  }\n}\n\n\n/**\n * Excatly what you expect: persist your json with redis.\n */\nexport class RedisBottom {\n  constructor() {\n\n  }\n}\n\n\n/**\n * Excatly what you expect: persist your json in html5 LocalStorage.\n */\nexport class LocalStorageBottom {\n  constructor() {\n\n  }\n}\n"
+  },
+  {
+    "__docId__": 1,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Bottom",
+    "memberof": "src/bottom.js",
+    "longname": "src/bottom.js~Bottom",
+    "access": null,
+    "export": true,
+    "importPath": "pile.js/src/bottom.js",
+    "importStyle": "{Bottom}",
+    "description": "A Bottom is the persistence layer of a Bucket.",
+    "lineNumber": 7,
+    "interface": false
+  },
+  {
+    "__docId__": 2,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/bottom.js~Bottom",
+    "longname": "src/bottom.js~Bottom#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 3,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "RedisBottom",
+    "memberof": "src/bottom.js",
+    "longname": "src/bottom.js~RedisBottom",
+    "access": null,
+    "export": true,
+    "importPath": "pile.js/src/bottom.js",
+    "importStyle": "{RedisBottom}",
+    "description": "Excatly what you expect: persist your json with redis.",
+    "lineNumber": 17,
+    "interface": false
+  },
+  {
+    "__docId__": 4,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/bottom.js~RedisBottom",
+    "longname": "src/bottom.js~RedisBottom#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 5,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "LocalStorageBottom",
+    "memberof": "src/bottom.js",
+    "longname": "src/bottom.js~LocalStorageBottom",
+    "access": null,
+    "export": true,
+    "importPath": "pile.js/src/bottom.js",
+    "importStyle": "{LocalStorageBottom}",
+    "description": "Excatly what you expect: persist your json in html5 LocalStorage.",
+    "lineNumber": 27,
+    "interface": false
+  },
+  {
+    "__docId__": 6,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/bottom.js~LocalStorageBottom",
+    "longname": "src/bottom.js~LocalStorageBottom#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 7,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/bucket.js",
+    "memberof": null,
+    "longname": "src/bucket.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "\"use strict\";\n\nimport EventEmitter from 'events';\nimport { generate } from 'shortid';\n\n\n/**\n * Appends a 's' to the given string.\n */\nfunction pluralize(s) { return s + 's'; }\n\n\n/**\n * Resolves the modelName from in _id (persistence id).\n */\nfunction modelNameFromId(_id) {\n    let modelName = _id.split(':')[0];\n    if (!modelName) {\n        throw \"No known modelName found in _id: \" + _id;\n    }\n    return modelName\n}\n\n\n/**\n * Buckets are used to create your overall pile.\n * Use them to cluster your objects together.\n *\n * Buckets store data in a flat manner.\n */\nexport class Bucket extends EventEmitter {\n  constructor() {\n    super();\n  }\n}\n\n\n/**\n * Those were managed behind the scene by a Bucket.\n * For each junction between two Meditors there\n * will be a Junction available.\n */\nclass Junction {\n  constructor() {}\n}\n"
+  },
+  {
+    "__docId__": 8,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "pluralize",
+    "memberof": "src/bucket.js",
+    "longname": "src/bucket.js~pluralize",
+    "access": null,
+    "export": false,
+    "importPath": "pile.js/src/bucket.js",
+    "importStyle": null,
+    "description": "Appends a 's' to the given string.",
+    "lineNumber": 10,
+    "params": [
+      {
+        "name": "s",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 9,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "modelNameFromId",
+    "memberof": "src/bucket.js",
+    "longname": "src/bucket.js~modelNameFromId",
+    "access": null,
+    "export": false,
+    "importPath": "pile.js/src/bucket.js",
+    "importStyle": null,
+    "description": "Resolves the modelName from in _id (persistence id).",
+    "lineNumber": 16,
+    "params": [
+      {
+        "name": "_id",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 10,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Bucket",
+    "memberof": "src/bucket.js",
+    "longname": "src/bucket.js~Bucket",
+    "access": null,
+    "export": true,
+    "importPath": "pile.js/src/bucket.js",
+    "importStyle": "{Bucket}",
+    "description": "Buckets are used to create your overall pile.\nUse them to cluster your objects together.\n\nBuckets store data in a flat manner.",
+    "lineNumber": 31,
+    "interface": false,
+    "extends": [
+      "events~EventEmitter"
+    ]
+  },
+  {
+    "__docId__": 11,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 12,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Junction",
+    "memberof": "src/bucket.js",
+    "longname": "src/bucket.js~Junction",
+    "access": null,
+    "export": false,
+    "importPath": "pile.js/src/bucket.js",
+    "importStyle": null,
+    "description": "Those were managed behind the scene by a Bucket.\nFor each junction between two Meditors there\nwill be a Junction available.",
+    "lineNumber": 43,
+    "interface": false
+  },
+  {
+    "__docId__": 13,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/bucket.js~Junction",
+    "longname": "src/bucket.js~Junction#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 44,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 14,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/dumpster_diver.js",
+    "memberof": null,
+    "longname": "src/dumpster_diver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "\"use strict\";\n\nimport EventEmitter from 'events';\n\n\n/**\n * Find stuff in one or more Buckets.\n */\nexport class DumpsterDiver extends EventEmitter {\n  constructor() {\n    super();\n  }\n}\n"
+  },
+  {
+    "__docId__": 15,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "DumpsterDiver",
+    "memberof": "src/dumpster_diver.js",
+    "longname": "src/dumpster_diver.js~DumpsterDiver",
+    "access": null,
+    "export": true,
+    "importPath": "pile.js/src/dumpster_diver.js",
+    "importStyle": "{DumpsterDiver}",
+    "description": "Find stuff in one or more Buckets.",
+    "lineNumber": 9,
+    "interface": false,
+    "extends": [
+      "events~EventEmitter"
+    ]
+  },
+  {
+    "__docId__": 16,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/dumpster_diver.js~DumpsterDiver",
+    "longname": "src/dumpster_diver.js~DumpsterDiver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 17,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/mediator.js",
+    "memberof": null,
+    "longname": "src/mediator.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "\"use strict\";\n\nimport EventEmitter from 'events';\nimport { generate } from 'shortid';\n\n\n/**\n * Clones an object with stringify to JSON and returning the parsed result.\n */\nfunction clone(o) { return JSON.parse(JSON.stringify(o)) }\n\n\n/**\n * Mediators know how to persist their data into JSON.\n *\n * They also fire events for Buckets to listen on changes.\n */\nexport class Mediator extends EventEmitter {\n  /**\n   * @data The initial data on construction\n   * @properties Informations about properties with possible related objects\n   */\n  constructor(data, properties) {\n    super();\n\n    this.data = { id: generate(), model: 'default' }\n\n    this.properties = new Map();\n    for (var prop in properties) {\n      this.properties.set(prop, properties[prop])\n    }\n\n    for (let prop in data) {\n      let value = data[prop];\n      if (this.properties.has(prop)) {\n        let property = this.properties.get(value);\n        if (property instanceof ForeignKeyProperty) {\n          this.data[prop] = value._id;\n          property.set(value);\n        }\n      } else {\n        this.data[prop] = data[prop];\n      }\n    }\n\n    var _id = this.data['model'] + ':' + this.data['id']\n    Object.defineProperty(this, '_id', { writable: false, value: _id });\n\n    for(let prop in this.data) {\n      if (prop == 'id' || prop == 'model') {\n        Object.defineProperty(this, prop,\n          {\n            writable: false,\n            value: this.data[prop]\n          });\n      } else {\n        Object.defineProperty(this, prop,\n          {\n            get: function() { return this._get(prop); },\n            set: function(value) { this._set(prop, value); }\n          });\n      }\n    }\n  }\n\n  load(prop, done) {\n    var me = this;\n    let property = me.properties.get(prop);\n    if (!property.loaded) {\n      this._bucket.get(me.data[prop], function(err, obj) {\n        property.value = obj\n        property.loaded = true\n        me.properties.set(prop, property)\n        done.call(me);\n      })\n    } else {\n      done.call(me);\n    }\n  }\n\n  /**\n   * Getter method that is aware subobjects.\n   */\n  _get(prop) {\n    if (this.properties.has(prop)) {\n      let property = this.properties.get(prop);\n      return property.value;\n    } else {\n      return this.data[prop]\n    }\n  }\n\n  /**\n   * Setter method for instance properties.\n   */\n  _set(prop, value) {\n    if (this.properties.has(prop) && !value) {\n      let property = this.properties.get(prop)\n      property.value = value\n      this.data[prop] = value;\n    } else {\n      if (this.data[prop] !== value) {\n        var old = clone(this.data);\n        this.data[prop] = value;\n        this.emit('changed', this, old);\n      }\n    }\n  }\n\n  /**\n   * Returns the underlying data object as json string.\n   */\n  toJSON() { return JSON.stringify(this.data); }\n}\n\n\n/**\n * Properties define special behaviours for data\n * that is bound to Mediators.\n */\nexport class Property extends EventEmitter {\n  constructor() {\n    super();\n  }\n}\n\n\n/**\n * A Junction to another Mediator.\n */\nexport class ForeignKeyProperty extends Property {\n  constructor() {\n    super();\n  }\n}\n\n\n/**\n * Many Junctions to other Mediators.\n */\nexport class ToManyProperty extends Property {\n  constructor() {\n    super();\n  }\n}\n"
+  },
+  {
+    "__docId__": 18,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "clone",
+    "memberof": "src/mediator.js",
+    "longname": "src/mediator.js~clone",
+    "access": null,
+    "export": false,
+    "importPath": "pile.js/src/mediator.js",
+    "importStyle": null,
+    "description": "Clones an object with stringify to JSON and returning the parsed result.",
+    "lineNumber": 10,
+    "params": [
+      {
+        "name": "o",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 19,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Mediator",
+    "memberof": "src/mediator.js",
+    "longname": "src/mediator.js~Mediator",
+    "access": null,
+    "export": true,
+    "importPath": "pile.js/src/mediator.js",
+    "importStyle": "{Mediator}",
+    "description": "Mediators know how to persist their data into JSON.\n\nThey also fire events for Buckets to listen on changes.",
+    "lineNumber": 18,
+    "interface": false,
+    "extends": [
+      "events~EventEmitter"
+    ]
+  },
+  {
+    "__docId__": 20,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/mediator.js~Mediator",
+    "longname": "src/mediator.js~Mediator#constructor",
+    "access": null,
+    "description": "",
+    "lineNumber": 23,
+    "unknown": [
+      {
+        "tagName": "@data",
+        "tagValue": "The initial data on construction"
+      },
+      {
+        "tagName": "@properties",
+        "tagValue": "Informations about properties with possible related objects"
+      }
+    ],
+    "params": [
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "properties",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 21,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "data",
+    "memberof": "src/mediator.js~Mediator",
+    "longname": "src/mediator.js~Mediator#data",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 22,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "properties",
+    "memberof": "src/mediator.js~Mediator",
+    "longname": "src/mediator.js~Mediator#properties",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 23,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "load",
+    "memberof": "src/mediator.js~Mediator",
+    "longname": "src/mediator.js~Mediator#load",
+    "access": null,
+    "description": null,
+    "lineNumber": 66,
+    "undocument": true,
+    "params": [
+      {
+        "name": "prop",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "done",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 24,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_get",
+    "memberof": "src/mediator.js~Mediator",
+    "longname": "src/mediator.js~Mediator#_get",
+    "access": null,
+    "description": "Getter method that is aware subobjects.",
+    "lineNumber": 84,
+    "params": [
+      {
+        "name": "prop",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 25,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_set",
+    "memberof": "src/mediator.js~Mediator",
+    "longname": "src/mediator.js~Mediator#_set",
+    "access": null,
+    "description": "Setter method for instance properties.",
+    "lineNumber": 96,
+    "params": [
+      {
+        "name": "prop",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 26,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "toJSON",
+    "memberof": "src/mediator.js~Mediator",
+    "longname": "src/mediator.js~Mediator#toJSON",
+    "access": null,
+    "description": "Returns the underlying data object as json string.",
+    "lineNumber": 113,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 27,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Property",
+    "memberof": "src/mediator.js",
+    "longname": "src/mediator.js~Property",
+    "access": null,
+    "export": true,
+    "importPath": "pile.js/src/mediator.js",
+    "importStyle": "{Property}",
+    "description": "Properties define special behaviours for data\nthat is bound to Mediators.",
+    "lineNumber": 121,
+    "interface": false,
+    "extends": [
+      "events~EventEmitter"
+    ]
+  },
+  {
+    "__docId__": 28,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/mediator.js~Property",
+    "longname": "src/mediator.js~Property#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 122,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 29,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ForeignKeyProperty",
+    "memberof": "src/mediator.js",
+    "longname": "src/mediator.js~ForeignKeyProperty",
+    "access": null,
+    "export": true,
+    "importPath": "pile.js/src/mediator.js",
+    "importStyle": "{ForeignKeyProperty}",
+    "description": "A Junction to another Mediator.",
+    "lineNumber": 131,
+    "interface": false,
+    "extends": [
+      "Property"
+    ]
+  },
+  {
+    "__docId__": 30,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/mediator.js~ForeignKeyProperty",
+    "longname": "src/mediator.js~ForeignKeyProperty#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 132,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 31,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ToManyProperty",
+    "memberof": "src/mediator.js",
+    "longname": "src/mediator.js~ToManyProperty",
+    "access": null,
+    "export": true,
+    "importPath": "pile.js/src/mediator.js",
+    "importStyle": "{ToManyProperty}",
+    "description": "Many Junctions to other Mediators.",
+    "lineNumber": 141,
+    "interface": false,
+    "extends": [
+      "Property"
+    ]
+  },
+  {
+    "__docId__": 32,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/mediator.js~ToManyProperty",
+    "longname": "src/mediator.js~ToManyProperty#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 142,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 34,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 35,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 36,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 37,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 38,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 39,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 40,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 41,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 42,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 43,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 44,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 45,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 46,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 47,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 48,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 49,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 50,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 51,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 52,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 53,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 54,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 55,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 56,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 57,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 58,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 59,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 60,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 61,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 62,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 63,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 64,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 65,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 66,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 67,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 68,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 69,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 70,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 71,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 72,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 73,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 74,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 75,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 76,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 77,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 78,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 79,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 80,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 82,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 83,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 84,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 85,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 86,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 87,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 88,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 89,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  }
+]

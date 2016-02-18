@@ -1,0 +1,42 @@
+{
+  "coverage": "50%",
+  "expectCount": 22,
+  "actualCount": 11,
+  "files": {
+    "src/bottom.js": {
+      "expectCount": 6,
+      "actualCount": 3,
+      "undocumentLines": [
+        28,
+        8,
+        18
+      ]
+    },
+    "src/bucket.js": {
+      "expectCount": 2,
+      "actualCount": 1,
+      "undocumentLines": [
+        32
+      ]
+    },
+    "src/dumpster_diver.js": {
+      "expectCount": 2,
+      "actualCount": 1,
+      "undocumentLines": [
+        10
+      ]
+    },
+    "src/mediator.js": {
+      "expectCount": 12,
+      "actualCount": 6,
+      "undocumentLines": [
+        132,
+        122,
+        142,
+        26,
+        66,
+        28
+      ]
+    }
+  }
+}
