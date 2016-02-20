@@ -32,15 +32,11 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~Bottom.html">Bottom</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~LocalStorageBottom.html">LocalStorageBottom</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~LocalStorageBottom.html">LocalStorageBottom</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~RedisBottom.html">RedisBottom</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bucket.js~Bucket.html">Bucket</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dumpster_diver.js~DumpsterDiver.html">DumpsterDiver</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~ForeignKeyProperty.html">ForeignKeyProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html">Mediator</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~Property.html">Property</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~ToManyProperty.html">ToManyProperty</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -73,7 +69,6 @@
   
   
   <div class="description" data-ice="description"><p>Mediators know how to persist their data into JSON.</p>
-<p>They also fire events for Buckets to listen on changes.</p>
 </div>
 
   
@@ -102,13 +97,14 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html#instance-constructor-constructor">constructor</a></span></span><span data-ice="signature">(data: <span>*</span>, properties: <span>*</span>)</span>
+           <span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html#instance-constructor-constructor">constructor</a></span></span><span data-ice="signature">(Object: <span>data</span>)</span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Mediators eat a data Object on construction.</p>
+</div>
       </div>
     </td>
     <td>
@@ -119,63 +115,7 @@
 </tbody>
 </table>
 </div>
-<div data-ice="memberSummary"><h2>Member Summary</h2><table class="summary" data-ice="summary">
-  <thead><tr><td data-ice="title" colspan="3">Public Members</td></tr></thead>
-  <tbody>
-  
-  <tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html#instance-member-data">data</a></span></span><span data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html#instance-member-properties">properties</a></span></span><span data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-</tbody>
-</table>
-</div>
+
 <div data-ice="methodSummary"><h2>Method Summary</h2><table class="summary" data-ice="summary">
   <thead><tr><td data-ice="title" colspan="3">Public Methods</td></tr></thead>
   <tbody>
@@ -191,32 +131,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html#instance-method-load">load</a></span></span><span data-ice="signature">(prop: <span>*</span>, done: <span>*</span>)</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html#instance-method-toJSON">toJSON</a></span></span><span data-ice="signature">(): <span>*</span></span>
+           <span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html#instance-method-toJSON">toJSON</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
       <div>
@@ -248,18 +163,20 @@
     
     
     
-    <span data-ice="name">constructor</span><span data-ice="signature">(data: <span>*</span>, properties: <span>*</span>)</span>
+    <span data-ice="name">constructor</span><span data-ice="signature">(Object: <span>data</span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/mediator.js.html#lineNumber23">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/mediator.js.html#lineNumber24">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Mediators eat a data Object on construction.
+They have the following data by default:</p>
+</div>
 
   
 
@@ -272,16 +189,11 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">data</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="name" data-depth="0">Object</td>
+      <td data-ice="type"><span>data</span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">properties</td>
-      <td data-ice="type"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The data for construction</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -304,153 +216,9 @@
   
 </div>
 </div>
-<div data-ice="memberDetails"><h2 data-ice="title">Public Members</h2>
 
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-data">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    <span data-ice="name">data</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/mediator.js.html#lineNumber26">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-properties">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    <span data-ice="name">properties</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/mediator.js.html#lineNumber28">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-</div>
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-load">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    <span data-ice="name">load</span><span data-ice="signature">(prop: <span>*</span>, done: <span>*</span>)</span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/mediator.js.html#lineNumber66">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">prop</td>
-      <td data-ice="type"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">done</td>
-      <td data-ice="type"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
 <div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-toJSON">
     <span class="access" data-ice="access">public</span>
@@ -458,11 +226,11 @@
     
     
     
-    <span data-ice="name">toJSON</span><span data-ice="signature">(): <span>*</span></span>
+    <span data-ice="name">toJSON</span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/mediator.js.html#lineNumber113">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/mediator.js.html#lineNumber102">source</a></span></span>
     </span>
   </h3>
 
@@ -481,8 +249,9 @@
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span>*</span></td>
-        
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>This object as a JSON string.</p>
+</td>
       </tr>
     </table>
     <div data-ice="returnProperties">

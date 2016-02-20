@@ -1,3 +1,2 @@
---recursive
---require babel-register test/bootstrap
---reporter spec
+--require babel-register test/lib/bootstrap
+--reporter list

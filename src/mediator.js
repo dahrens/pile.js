@@ -13,45 +13,39 @@ function clone(o) { return JSON.parse(JSON.stringify(o)) }
 /**
  * Mediators know how to persist their data into JSON.
  *
- * They also fire events for Buckets to listen on changes.
+ * @emits 'changed' with (mediatorObj, eventData={prop: 'thePropName', old: oldValue})
  */
 export class Mediator extends EventEmitter {
   /**
-   * @data The initial data on construction
-   * @properties Informations about properties with possible related objects
+   * Mediators eat a data Object on construction.
+   * They have the following data by default:
+   * @param {data} Object The data for construction
    */
-  constructor(data, properties) {
+  constructor(data) {
     super();
 
-    this.data = { id: generate(), model: 'default' }
-
-    this.properties = new Map();
-    for (var prop in properties) {
-      this.properties.set(prop, properties[prop])
-    }
+    this._data = { id: generate(), model: 'default' };
+    this._refs = new Map();
 
     for (let prop in data) {
       let value = data[prop];
-      if (this.properties.has(prop)) {
-        let property = this.properties.get(value);
-        if (property instanceof ForeignKeyProperty) {
-          this.data[prop] = value._id;
-          property.set(value);
-        }
+      if (value instanceof Mediator) {
+        this._data[prop] = value._id;
+        this._refs.set(value._id, value);
       } else {
-        this.data[prop] = data[prop];
+        this._data[prop] = data[prop];
       }
     }
 
-    var _id = this.data['model'] + ':' + this.data['id']
+    var _id = this._data['model'] + ':' + this._data['id']
     Object.defineProperty(this, '_id', { writable: false, value: _id });
 
-    for(let prop in this.data) {
+    for(let prop in this._data) {
       if (prop == 'id' || prop == 'model') {
         Object.defineProperty(this, prop,
           {
             writable: false,
-            value: this.data[prop]
+            value: this._data[prop]
           });
       } else {
         Object.defineProperty(this, prop,
@@ -63,83 +57,47 @@ export class Mediator extends EventEmitter {
     }
   }
 
-  load(prop, done) {
-    var me = this;
-    let property = me.properties.get(prop);
-    if (!property.loaded) {
-      this._bucket.get(me.data[prop], function(err, obj) {
-        property.value = obj
-        property.loaded = true
-        me.properties.set(prop, property)
-        done.call(me);
-      })
-    } else {
-      done.call(me);
-    }
-  }
-
   /**
-   * Getter method that is aware subobjects.
+   * Getter method that is aware references.
+   *
+   * @param {string} prop The name of the property
+   * @returns {mixed} The value of the property.
    */
   _get(prop) {
-    if (this.properties.has(prop)) {
-      let property = this.properties.get(prop);
-      return property.value;
-    } else {
-      return this.data[prop]
+    let value = this._data[prop];
+    if (this._refs.has(value)) {
+      return this._refs.get(value);
     }
+    else { return value; }
   }
 
   /**
-   * Setter method for instance properties.
+   * Setter method for instance properties that are encapsulated in _data.
+   * The setter tracks references in the seperate map _refs.
+   *
+   * @param   {string} prop The name of the property to set.
+   * @param   {mixed} value The new value for the given prop.
+   * @emits   'changed' with
+   *          (mediatorObj, eventData={prop: 'thePropName', old: oldValue})
    */
   _set(prop, value) {
-    if (this.properties.has(prop) && !value) {
-      let property = this.properties.get(prop)
-      property.value = value
-      this.data[prop] = value;
+    let cur;
+    if (value instanceof Mediator) {
+      cur = this._refs.get(this._data[prop]);
+      if (cur) { this._refs.delete(this._data[prop]); }
+      this._refs.set(value._id, value);
+      this._data[prop] = value._id
     } else {
-      if (this.data[prop] !== value) {
-        var old = clone(this.data);
-        this.data[prop] = value;
-        this.emit('changed', this, old);
-      }
+      cur = this._data[prop]
+      this._data[prop] = value
     }
+    this.emit('changed', this, {prop: prop, old: cur});
   }
 
   /**
    * Returns the underlying data object as json string.
+   *
+   * @returns {string} This object as a JSON string.
    */
-  toJSON() { return JSON.stringify(this.data); }
-}
-
-
-/**
- * Properties define special behaviours for data
- * that is bound to Mediators.
- */
-export class Property extends EventEmitter {
-  constructor() {
-    super();
-  }
-}
-
-
-/**
- * A Junction to another Mediator.
- */
-export class ForeignKeyProperty extends Property {
-  constructor() {
-    super();
-  }
-}
-
-
-/**
- * Many Junctions to other Mediators.
- */
-export class ToManyProperty extends Property {
-  constructor() {
-    super();
-  }
+  toJSON() { return JSON.stringify(this._data); }
 }

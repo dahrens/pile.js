@@ -22,7 +22,6 @@ function modelNameFromId(_id) {
     return modelName
 }
 
-
 /**
  * Buckets are used to create your overall pile.
  * Use them to cluster your objects together.
@@ -30,11 +29,11 @@ function modelNameFromId(_id) {
  * Buckets store data in a flat manner.
  */
 export class Bucket extends EventEmitter {
-  constructor(redis) {
+  constructor(bottom) {
       super();
-      this.map = new Map();
-      this.redis = redis;
-      this.models = {}
+      this.memory = new Map();
+      this.models = {};
+      this.bottom = bottom;
   }
 
   /**
@@ -42,11 +41,6 @@ export class Bucket extends EventEmitter {
    *
    * This means that the Bucket is able to persist those objects
    * into his own Namespace as seperate objects.
-   *
-   * If object were added to this Bucket, which have references
-   * to a cls that is known by the Bucket, it will save a reference
-   * in the property of the refering object and creates an own instance
-   * for the referred object.
    */
   register(cls) {
       let instance = new cls();
@@ -84,20 +78,13 @@ export class Bucket extends EventEmitter {
       if (typeof _id !== "string") {
         throw "Must be a string"
       }
-      var model = this._modelFromId(_id);
       let me = this;
-      if (this.map.has(_id)) {
-        callback.call(me, null, this.map.get(_id)); return;
+      if (this.memory.has(_id)) {
+        callback.call(me, null, this.memory.get(_id));
       } else {
-        this.redis.hgetall(_id, function(err, reply) {
-          if (!reply) {
-            callback.call(me, "Not found id " + _id, null);
-          } else {
-            me._add(new model(reply), false)
-            callback.call(me, null, me.map.get(_id));
-          }
-        });
+        callback.call(me, "Can not find id " + _id)
       }
+      // TODO: what about loading from bottom?
 
   }
 
@@ -112,20 +99,15 @@ export class Bucket extends EventEmitter {
   /**
    * Adds one object to the Bucket.
    */
-  _add(obj, persist=true) {
+  _add(mediator) {
       var me = this;
-      if (!(obj instanceof Mediator)) {
+      if (!(mediator instanceof Mediator)) {
         throw "Must be a subclass of Mediator";
       } else {
-        obj._bucket = me
-        me.map.set(obj._id, obj);
-        if (persist) {
-          me.redis.sadd(pluralize(obj.model), obj._id);
-          me._persist(obj)
-        }
+        me.memory.set(mediator._id, mediator);
 
-        obj.on("changed", function(obj, oldData) {
-          me._persist(obj)
+        mediator.on("changed", function(mediator, oldData) {
+          me.memory.set(mediator._id, mediator);
         })
       }
   }
@@ -137,8 +119,6 @@ export class Bucket extends EventEmitter {
    * and ids to this method.
    */
   remove(mediators) {
-
-
     let arr = Array.isArray(mediators) ? mediators : [mediators]
     for (var i in arr) { this._remove(arr[i]); }
   }
@@ -151,27 +131,8 @@ export class Bucket extends EventEmitter {
       throw "Must be a subclass of Mediator or an id.";
     }
     let _id = (typeof mediator === "string") ? mediator : mediator._id;
-    let model = modelNameFromId(_id);
-    this.map.delete(_id);
-    this.redis.srem(pluralize(model), _id);
-    this.redis.del(_id);
+    this.memory.delete(_id);
   }
-
-  _persist(obj) {
-    let props = [];
-    for (let prop in obj.data) {
-      if (typeof obj[prop] === 'object') {
-        // what if _id is not defined?
-        props.push(prop, obj[prop]._id);
-        this.add(obj[prop]);
-      } else {
-        props.push(prop, obj[prop]);
-      }
-    }
-    this.redis.hmset(obj._id, props);
-  }
-
-  _read() {}
 }
 
 

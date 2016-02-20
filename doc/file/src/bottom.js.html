@@ -32,15 +32,11 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~Bottom.html">Bottom</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~LocalStorageBottom.html">LocalStorageBottom</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~LocalStorageBottom.html">LocalStorageBottom</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bottom.js~RedisBottom.html">RedisBottom</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bucket.js~Bucket.html">Bucket</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dumpster_diver.js~DumpsterDiver.html">DumpsterDiver</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~ForeignKeyProperty.html">ForeignKeyProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~Mediator.html">Mediator</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~Property.html">Property</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mediator.js~ToManyProperty.html">ToManyProperty</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -48,23 +44,34 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/bottom.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&quot;use strict&quot;;
 
-
-/**
- * A Bottom is the persistence layer of a Bucket.
- */
-export class Bottom {
-  constructor() {
-
-  }
-}
-
+import { Mediator } from &apos;src/mediator&apos;;
+import { flatten } from &apos;src/bucket&apos;;
 
 /**
  * Excatly what you expect: persist your json with redis.
  */
 export class RedisBottom {
-  constructor() {
 
+  static ground(mediators) {
+    let ret = []
+    for (var i = 0; i &lt; mediators.length; i++) {
+      let props = [mediators[i][0]]
+      for (let prop in mediators[i][1]) {
+        props.push(prop, mediators[i][1][prop]);
+      }
+      ret.push(props)
+    }
+    return ret
+  }
+
+
+  write(mediators) {
+    let arr = Array.isArray(mediators) ? mediators : [mediators]
+    for (var i in flatten) { this._write(grounded[i]); }
+  }
+
+  _write(mediator) {
+    this.store.add()
   }
 }
 

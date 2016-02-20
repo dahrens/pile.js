@@ -52,11 +52,10 @@ module.exports = function(grunt) {
         mochaTest: {
             test: {
                 options: {
-                    recursive: true,
-                    reporter: 'spec',
-                    require: ['babel-register', 'test/bootstrap.js']
+                    reporter: 'list',
+                    require: ['babel-register', 'test/lib/bootstrap.js']
                 },
-                src: ['test/**/*test.js'],
+                src: ['test/**/*.test.js'],
             },
         }
     });

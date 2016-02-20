@@ -1,11 +1,5 @@
 window.esdocSearchIndex = [
   [
-    "pile.js/src/bottom.js~bottom",
-    "class/src/bottom.js~Bottom.html",
-    "<span>Bottom</span> <span class=\"search-result-import-path\">pile.js/src/bottom.js</span>",
-    "class"
-  ],
-  [
     "pile.js/src/bucket.js~bucket",
     "class/src/bucket.js~Bucket.html",
     "<span>Bucket</span> <span class=\"search-result-import-path\">pile.js/src/bucket.js</span>",
@@ -15,12 +9,6 @@ window.esdocSearchIndex = [
     "pile.js/src/dumpster_diver.js~dumpsterdiver",
     "class/src/dumpster_diver.js~DumpsterDiver.html",
     "<span>DumpsterDiver</span> <span class=\"search-result-import-path\">pile.js/src/dumpster_diver.js</span>",
-    "class"
-  ],
-  [
-    "pile.js/src/mediator.js~foreignkeyproperty",
-    "class/src/mediator.js~ForeignKeyProperty.html",
-    "<span>ForeignKeyProperty</span> <span class=\"search-result-import-path\">pile.js/src/mediator.js</span>",
     "class"
   ],
   [
@@ -36,21 +24,9 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "pile.js/src/mediator.js~property",
-    "class/src/mediator.js~Property.html",
-    "<span>Property</span> <span class=\"search-result-import-path\">pile.js/src/mediator.js</span>",
-    "class"
-  ],
-  [
     "pile.js/src/bottom.js~redisbottom",
     "class/src/bottom.js~RedisBottom.html",
     "<span>RedisBottom</span> <span class=\"search-result-import-path\">pile.js/src/bottom.js</span>",
-    "class"
-  ],
-  [
-    "pile.js/src/mediator.js~tomanyproperty",
-    "class/src/mediator.js~ToManyProperty.html",
-    "<span>ToManyProperty</span> <span class=\"search-result-import-path\">pile.js/src/mediator.js</span>",
     "class"
   ],
   [
@@ -390,21 +366,21 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/bottom.js~bottom#constructor",
-    "class/src/bottom.js~Bottom.html#instance-constructor-constructor",
-    "src/bottom.js~Bottom#constructor",
-    "method"
-  ],
-  [
     "src/bottom.js~localstoragebottom#constructor",
     "class/src/bottom.js~LocalStorageBottom.html#instance-constructor-constructor",
     "src/bottom.js~LocalStorageBottom#constructor",
     "method"
   ],
   [
-    "src/bottom.js~redisbottom#constructor",
-    "class/src/bottom.js~RedisBottom.html#instance-constructor-constructor",
-    "src/bottom.js~RedisBottom#constructor",
+    "src/bottom.js~redisbottom#write",
+    "class/src/bottom.js~RedisBottom.html#instance-method-write",
+    "src/bottom.js~RedisBottom#write",
+    "method"
+  ],
+  [
+    "src/bottom.js~redisbottom.ground",
+    "class/src/bottom.js~RedisBottom.html#static-method-ground",
+    "src/bottom.js~RedisBottom.ground",
     "method"
   ],
   [
@@ -414,9 +390,51 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/bucket.js~bucket#add",
+    "class/src/bucket.js~Bucket.html#instance-method-add",
+    "src/bucket.js~Bucket#add",
+    "method"
+  ],
+  [
     "src/bucket.js~bucket#constructor",
     "class/src/bucket.js~Bucket.html#instance-constructor-constructor",
     "src/bucket.js~Bucket#constructor",
+    "method"
+  ],
+  [
+    "src/bucket.js~bucket#get",
+    "class/src/bucket.js~Bucket.html#instance-method-get",
+    "src/bucket.js~Bucket#get",
+    "method"
+  ],
+  [
+    "src/bucket.js~bucket#memory",
+    "class/src/bucket.js~Bucket.html#instance-member-memory",
+    "src/bucket.js~Bucket#memory",
+    "member"
+  ],
+  [
+    "src/bucket.js~bucket#models",
+    "class/src/bucket.js~Bucket.html#instance-member-models",
+    "src/bucket.js~Bucket#models",
+    "member"
+  ],
+  [
+    "src/bucket.js~bucket#register",
+    "class/src/bucket.js~Bucket.html#instance-method-register",
+    "src/bucket.js~Bucket#register",
+    "method"
+  ],
+  [
+    "src/bucket.js~bucket#remove",
+    "class/src/bucket.js~Bucket.html#instance-method-remove",
+    "src/bucket.js~Bucket#remove",
+    "method"
+  ],
+  [
+    "src/bucket.js~bucket#unregister",
+    "class/src/bucket.js~Bucket.html#instance-method-unregister",
+    "src/bucket.js~Bucket#unregister",
     "method"
   ],
   [
@@ -438,51 +456,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/mediator.js~foreignkeyproperty#constructor",
-    "class/src/mediator.js~ForeignKeyProperty.html#instance-constructor-constructor",
-    "src/mediator.js~ForeignKeyProperty#constructor",
-    "method"
-  ],
-  [
     "src/mediator.js~mediator#constructor",
     "class/src/mediator.js~Mediator.html#instance-constructor-constructor",
     "src/mediator.js~Mediator#constructor",
     "method"
   ],
   [
-    "src/mediator.js~mediator#data",
-    "class/src/mediator.js~Mediator.html#instance-member-data",
-    "src/mediator.js~Mediator#data",
-    "member"
-  ],
-  [
-    "src/mediator.js~mediator#load",
-    "class/src/mediator.js~Mediator.html#instance-method-load",
-    "src/mediator.js~Mediator#load",
-    "method"
-  ],
-  [
-    "src/mediator.js~mediator#properties",
-    "class/src/mediator.js~Mediator.html#instance-member-properties",
-    "src/mediator.js~Mediator#properties",
-    "member"
-  ],
-  [
     "src/mediator.js~mediator#tojson",
     "class/src/mediator.js~Mediator.html#instance-method-toJSON",
     "src/mediator.js~Mediator#toJSON",
-    "method"
-  ],
-  [
-    "src/mediator.js~property#constructor",
-    "class/src/mediator.js~Property.html#instance-constructor-constructor",
-    "src/mediator.js~Property#constructor",
-    "method"
-  ],
-  [
-    "src/mediator.js~tomanyproperty#constructor",
-    "class/src/mediator.js~ToManyProperty.html#instance-constructor-constructor",
-    "src/mediator.js~ToManyProperty#constructor",
     "method"
   ]
 ]

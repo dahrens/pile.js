@@ -1,112 +1,117 @@
 "use strict";
 
 import { assert } from 'chai';
-import { format } from 'util';
 
-import { createClient } from 'redis';
 import { Mediator } from 'src/mediator';
+import { Human, Brain } from 'test/lib/config';
+
+
 
 
 describe('Mediator', function() {
-  var data, mediator;
+  var data, m1, m2, fooman, brain;
   beforeEach(function() {
     data = {prop: 'value'};
-    mediator = new Mediator(data);
+    m1 = new Mediator(data);
+    m2 = new Mediator(data);
+    fooman = new Human("fooman");
+    brain = new Brain();
   })
   it('should have getters for the underlying data object', function () {
-    assert.equal(mediator.prop, data.prop);
+    assert.equal(m1.prop, data.prop);
+    assert.equal(fooman.name, "fooman");
+    assert.equal(fooman.brain, null);
   });
   it('should have setters for the underlying data object', function () {
-    mediator.prop = 'changed';
-    assert.equal(mediator.prop, 'changed');
+    m1.prop = 'changed';
+    assert.equal(m1.prop, 'changed');
+    fooman.brain = brain;
+    assert(fooman.brain, "no brain!");
+    assert.equal(fooman.brain.think(), "ARGH!");
   });
-
+  it('can be constructed with references.', function() {
+    let brainz = new Brain();
+    let humanz = new Human("humanz!", brainz);
+    assert(humanz.brain, "no brain!");
+    assert.equal(humanz._data['brain'],brainz._id)
+  })
   it('should always have an id and model set.', function () {
-    mediator.prop = 'changed';
-    assert(mediator.hasOwnProperty('id'));
-    assert(mediator.hasOwnProperty('model'));
+    assert(m1.hasOwnProperty('id'));
+    assert(m1.hasOwnProperty('model'));
+    assert(m2.hasOwnProperty('id'));
+    assert(m2.hasOwnProperty('model'));
+    assert(fooman.hasOwnProperty('id'));
+    assert(fooman.hasOwnProperty('model'));
+    assert(brain.hasOwnProperty('id'));
+    assert(brain.hasOwnProperty('model'));
   });
 
-  it('should always have an persistent id in _id', function() {
-    assert(mediator._id);
-    assert.equal(mediator._id, mediator.model + ':' + mediator.id);
+  it('should always have an persistent id prefixed with correct model in _id', function() {
+    assert(m1._id);
+    assert(m2._id);
+    assert(fooman._id);
+    assert(brain._id);
+    assert.equal(m1._id, 'default:' + m1.id);
+    assert.equal(m2._id, 'default:' + m2.id);
+    assert.equal(fooman._id, 'human:' + fooman.id);
+    assert.equal(brain._id, 'brain:' + brain.id);
+    let m3 = new Mediator({id:'cheated'});
+    assert.equal(m3._id, 'default:cheated');
   })
 
-  it('should not fire "changed" on setter call with same value', function(done) {
+  it('should fire "changed" on change', function(done) {
     var errTimeout = setTimeout(function () {
-      assert(true, '"changed" never fired');
+      assert(false, '"changed" event never fired');
       done();
-    }, 20);
+    }, 1000);
 
-    mediator.on('changed', function(oldData){
+    m1.on('changed', function(m, data){
       clearTimeout(errTimeout);
-      assert(false);
+      assert.equal(m.prop, 'changed');
+      assert.equal(data.prop, 'prop');
+      assert.equal(data.old, 'value');
+      assert.equal(m instanceof Mediator, true);
       done();
     });
-    mediator.prop = 'value';
+    m1.prop = 'changed';
   });
+  it('should fire "changed" on changed with mediators', function(done) {
+    var errTimeout = setTimeout(function () {
+      assert(false, '"changed" event never fired');
+      done();
+    }, 1000);
 
-  describe('Events', function () {
-    it('should fire "changed" on change', function(done) {
-      var errTimeout = setTimeout(function () {
-        assert(false, '"changed" event never fired');
-        done();
-      }, 1000);
-
-      mediator.on('changed', function(p, old){
-        clearTimeout(errTimeout);
-        assert.equal(p.prop, 'changed');
-        assert.equal(old.prop, 'value');
-        assert.equal(p instanceof Mediator, true);
-        assert.equal(old instanceof Mediator, false);
-        done();
-      });
-      mediator.prop = 'changed';
+    fooman.on('changed', function(foo, data) {
+      clearTimeout(errTimeout);
+      assert(foo);
+      assert(data);
+      assert(foo.brain);
+      assert.equal(data.prop, 'brain');
+      assert.equal(data.old, null);
+      assert.equal(foo.brain.think(), "ARGH!");
+      done();
     });
+
+    fooman.brain = brain;
   });
 
   describe('#toJSON', function() {
     it('should return the data property as json string', function() {
       var data = {id: 'foo'}
-      var mediator = new Mediator(data);
-      assert.equal(mediator.toJSON(), '{"id":"foo","model":"default"}');
+      var m1 = new Mediator(data);
+      assert.equal(m1.toJSON(), '{"id":"foo","model":"default"}');
       data = {id: 'foo', "foo":"bar"}
-      mediator = new Mediator(data);
-      assert.equal(mediator.toJSON(), '{"id":"foo","model":"default","foo":"bar"}');
+      m1 = new Mediator(data);
+      assert.equal(m1.toJSON(), '{"id":"foo","model":"default","foo":"bar"}');
     });
     it('should not include _id', function() {
       var data = {id: 'foo'}
-      var mediator = new Mediator(data);
-      assert.equal(mediator.toJSON().indexOf("_id"), -1);
+      var m1 = new Mediator(data);
+      assert.equal(m1.toJSON().indexOf("_id"), -1);
     });
-  });
-});
-
-
-class Chicken extends Mediator {
-  constructor(name='buckbuck') {
-    super({
-      model: 'chicken',
-      name: name
+    it('should include _id of subclasses, but not the subclass.', function() {
+      fooman.brain = brain
+      assert(JSON.parse(fooman.toJSON()).brain, brain._id);
     });
-  }
-
-  pick(thing) {
-    return format('Chicken %s picks up %s!', this.name, thing);
-  }
-}
-
-
-describe('Mediators can easily be subclassed', function() {
-  var buckbuck, happy;
-
-  beforeEach(function() {
-    buckbuck = new Chicken();
-    happy = new Chicken('happy');
-  });
-  it('constructors can take arguments', function() {
-
-    assert.equal(buckbuck.pick("a corn"), "Chicken buckbuck picks up a corn!");
-    assert.equal(happy.pick("a corn"), "Chicken happy picks up a corn!");
   });
 });

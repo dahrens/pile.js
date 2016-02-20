@@ -10,41 +10,10 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "\"use strict\";\n\n\n/**\n * A Bottom is the persistence layer of a Bucket.\n */\nexport class Bottom {\n  constructor() {\n\n  }\n}\n\n\n/**\n * Excatly what you expect: persist your json with redis.\n */\nexport class RedisBottom {\n  constructor() {\n\n  }\n}\n\n\n/**\n * Excatly what you expect: persist your json in html5 LocalStorage.\n */\nexport class LocalStorageBottom {\n  constructor() {\n\n  }\n}\n"
+    "content": "\"use strict\";\n\nimport { Mediator } from 'src/mediator';\nimport { flatten } from 'src/bucket';\n\n/**\n * Excatly what you expect: persist your json with redis.\n */\nexport class RedisBottom {\n\n  static ground(mediators) {\n    let ret = []\n    for (var i = 0; i < mediators.length; i++) {\n      let props = [mediators[i][0]]\n      for (let prop in mediators[i][1]) {\n        props.push(prop, mediators[i][1][prop]);\n      }\n      ret.push(props)\n    }\n    return ret\n  }\n\n\n  write(mediators) {\n    let arr = Array.isArray(mediators) ? mediators : [mediators]\n    for (var i in flatten) { this._write(grounded[i]); }\n  }\n\n  _write(mediator) {\n    this.store.add()\n  }\n}\n\n\n/**\n * Excatly what you expect: persist your json in html5 LocalStorage.\n */\nexport class LocalStorageBottom {\n  constructor() {\n\n  }\n}\n"
   },
   {
     "__docId__": 1,
-    "kind": "class",
-    "static": true,
-    "variation": null,
-    "name": "Bottom",
-    "memberof": "src/bottom.js",
-    "longname": "src/bottom.js~Bottom",
-    "access": null,
-    "export": true,
-    "importPath": "pile.js/src/bottom.js",
-    "importStyle": "{Bottom}",
-    "description": "A Bottom is the persistence layer of a Bucket.",
-    "lineNumber": 7,
-    "interface": false
-  },
-  {
-    "__docId__": 2,
-    "kind": "constructor",
-    "static": false,
-    "variation": null,
-    "name": "constructor",
-    "memberof": "src/bottom.js~Bottom",
-    "longname": "src/bottom.js~Bottom#constructor",
-    "access": null,
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "params": [],
-    "generator": false
-  },
-  {
-    "__docId__": 3,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -56,22 +25,78 @@
     "importPath": "pile.js/src/bottom.js",
     "importStyle": "{RedisBottom}",
     "description": "Excatly what you expect: persist your json with redis.",
-    "lineNumber": 17,
+    "lineNumber": 9,
     "interface": false
   },
   {
-    "__docId__": 4,
-    "kind": "constructor",
-    "static": false,
+    "__docId__": 2,
+    "kind": "method",
+    "static": true,
     "variation": null,
-    "name": "constructor",
+    "name": "ground",
     "memberof": "src/bottom.js~RedisBottom",
-    "longname": "src/bottom.js~RedisBottom#constructor",
+    "longname": "src/bottom.js~RedisBottom.ground",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 11,
     "undocument": true,
-    "params": [],
+    "params": [
+      {
+        "name": "mediators",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 3,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "write",
+    "memberof": "src/bottom.js~RedisBottom",
+    "longname": "src/bottom.js~RedisBottom#write",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "params": [
+      {
+        "name": "mediators",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 4,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_write",
+    "memberof": "src/bottom.js~RedisBottom",
+    "longname": "src/bottom.js~RedisBottom#_write",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "params": [
+      {
+        "name": "mediator",
+        "types": [
+          "*"
+        ]
+      }
+    ],
     "generator": false
   },
   {
@@ -87,7 +112,7 @@
     "importPath": "pile.js/src/bottom.js",
     "importStyle": "{LocalStorageBottom}",
     "description": "Excatly what you expect: persist your json in html5 LocalStorage.",
-    "lineNumber": 27,
+    "lineNumber": 38,
     "interface": false
   },
   {
@@ -100,7 +125,7 @@
     "longname": "src/bottom.js~LocalStorageBottom#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 39,
     "undocument": true,
     "params": [],
     "generator": false
@@ -116,7 +141,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "\"use strict\";\n\nimport EventEmitter from 'events';\nimport { generate } from 'shortid';\n\n\n/**\n * Appends a 's' to the given string.\n */\nfunction pluralize(s) { return s + 's'; }\n\n\n/**\n * Resolves the modelName from in _id (persistence id).\n */\nfunction modelNameFromId(_id) {\n    let modelName = _id.split(':')[0];\n    if (!modelName) {\n        throw \"No known modelName found in _id: \" + _id;\n    }\n    return modelName\n}\n\n\n/**\n * Buckets are used to create your overall pile.\n * Use them to cluster your objects together.\n *\n * Buckets store data in a flat manner.\n */\nexport class Bucket extends EventEmitter {\n  constructor() {\n    super();\n  }\n}\n\n\n/**\n * Those were managed behind the scene by a Bucket.\n * For each junction between two Meditors there\n * will be a Junction available.\n */\nclass Junction {\n  constructor() {}\n}\n"
+    "content": "\"use strict\";\n\nimport EventEmitter from 'events';\nimport { generate } from 'shortid';\nimport { Mediator } from 'src/mediator';\n\n\n/**\n * Appends a 's' to the given string.\n */\nfunction pluralize(s) { return s + 's'; }\n\n\n/**\n * Resolves the modelName from in _id (persistence id).\n */\nfunction modelNameFromId(_id) {\n    let modelName = _id.split(':')[0];\n    if (!modelName) {\n        throw \"No known modelName found in _id: \" + _id;\n    }\n    return modelName\n}\n\n/**\n * Buckets are used to create your overall pile.\n * Use them to cluster your objects together.\n *\n * Buckets store data in a flat manner.\n */\nexport class Bucket extends EventEmitter {\n  constructor(redis) {\n      super();\n      this.memory = new Map();\n      this.models = {}\n  }\n\n  /**\n   * Registers a cls for this Bucket.\n   *\n   * This means that the Bucket is able to persist those objects\n   * into his own Namespace as seperate objects.\n   */\n  register(cls) {\n      let instance = new cls();\n      if (!(instance instanceof Mediator)) {\n        throw \"Must be a subclass of Mediator\"\n      }\n      this.models[instance.model] = cls\n  }\n\n  unregister(cls) {\n      throw \"to be done...\"\n  }\n\n  _modelFromModelName(modelName) {\n      let model = this.models[modelName]\n      if (!model) {\n        throw \"No model class found for modelName: \" + modelName;\n      }\n      return model\n  }\n\n  _modelFromId(_id) {\n      return this._modelFromModelName(\n        modelNameFromId(_id)\n      );\n  }\n\n  /**\n   * Asynchronous getter for mediators known by the Bucket.\n   *\n   * Error are handled in the callback method, that *must* be\n   * provided if you want to receive a result.\n   */\n  get(_id, callback) {\n      if (typeof _id !== \"string\") {\n        throw \"Must be a string\"\n      }\n      var model = this._modelFromId(_id);\n      let me = this;\n      if (this.map.has(_id)) {\n        callback.call(me, null, this.memory.get(_id)); return;\n      } else {\n        this.redis.hgetall(_id, function(err, reply) {\n          if (!reply) {\n            callback.call(me, \"Not found id \" + _id, null);\n          } else {\n            me._add(new model(reply), false)\n            callback.call(me, null, me.memory.get(_id));\n          }\n        });\n      }\n\n  }\n\n  /**\n   * Adds one or more mediators to the Bucket.\n   */\n  add(mediators) {\n    let arr = Array.isArray(mediators) ? mediators : [mediators]\n    for (var i in arr) { this._add(arr[i]); }\n  }\n\n  /**\n   * Adds one object to the Bucket.\n   */\n  _add(mediator) {\n      var me = this;\n      if (!(mediator instanceof Mediator)) {\n        throw \"Must be a subclass of Mediator\";\n      } else {\n        mediator._bucket = me\n        me.map.set(mediator._id, mediator);\n\n        let alloy = this._flatten(mediator)\n        for (var i = 0; i < alloy.length; i++) {\n          me._persist(alloy[i]);\n        }\n\n        mediator.on(\"changed\", function(mediator, oldData) {\n          let alloy = _flatten(mediator)\n          for (var i = 0; i < alloy.length; i++) {\n            me._persist(alloy[i]);\n          }\n        })\n      }\n  }\n\n  /**\n   * Removes one or more objects from the Bucket.\n   *\n   * You can pass an id or an mediator or a list of both, mediators\n   * and ids to this method.\n   */\n  remove(mediators) {\n    let arr = Array.isArray(mediators) ? mediators : [mediators]\n    for (var i in arr) { this._remove(arr[i]); }\n  }\n\n  /**\n   * Removes one object from the bucket, either by id or mediator object.\n   */\n  _remove(mediator) {\n    if (typeof mediator !== \"string\" && !(mediator instanceof Mediator)) {\n      throw \"Must be a subclass of Mediator or an id.\";\n    }\n    let _id = (typeof mediator === \"string\") ? mediator : mediator._id;\n    let model = modelNameFromId(_id);\n    this.map.delete(_id);\n    this.redis.srem(pluralize(model), _id);\n    this.redis.del(_id);\n  }\n\n  _flatten(mediator) {\n    let mediators = [];\n    let ret = [mediator._id]\n    let junctions = [];\n    let props = {};\n    for (let prop in mediator.data) {\n      if (mediator[prop] instanceof Mediator) {\n        props[prop] = mediator[prop]._id;\n        this.add(mediator[prop]);\n        this.junctions\n      } else {\n        props[prop] = mediator[prop];\n      }\n    }\n    ret.push(props);\n    mediators.push(ret);\n    return mediators\n  }\n\n  _persist(obj) {\n\n    // TODO: there might by duplicates - depending on your models very many and usage may be very many - lets filter them out before proceeding here...\n    //this.redis.hmset(obj._id, props);\n  }\n\n  _read() {}\n}\n\n\n/**\n * Those were managed behind the scene by a Bucket.\n * For each junction between two Meditors there\n * will be a Junction available.\n */\nclass Junction {\n  constructor() {}\n}\n"
   },
   {
     "__docId__": 8,
@@ -131,7 +156,7 @@
     "importPath": "pile.js/src/bucket.js",
     "importStyle": null,
     "description": "Appends a 's' to the given string.",
-    "lineNumber": 10,
+    "lineNumber": 11,
     "params": [
       {
         "name": "s",
@@ -160,7 +185,7 @@
     "importPath": "pile.js/src/bucket.js",
     "importStyle": null,
     "description": "Resolves the modelName from in _id (persistence id).",
-    "lineNumber": 16,
+    "lineNumber": 17,
     "params": [
       {
         "name": "_id",
@@ -207,11 +232,326 @@
     "description": null,
     "lineNumber": 32,
     "undocument": true,
-    "params": [],
+    "params": [
+      {
+        "name": "redis",
+        "types": [
+          "*"
+        ]
+      }
+    ],
     "generator": false
   },
   {
     "__docId__": 12,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "memory",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#memory",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 13,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "models",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#models",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 14,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "register",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#register",
+    "access": null,
+    "description": "Registers a cls for this Bucket.\n\nThis means that the Bucket is able to persist those objects\ninto his own Namespace as seperate objects.",
+    "lineNumber": 44,
+    "params": [
+      {
+        "name": "cls",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 15,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "unregister",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#unregister",
+    "access": null,
+    "description": null,
+    "lineNumber": 52,
+    "undocument": true,
+    "params": [
+      {
+        "name": "cls",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 16,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_modelFromModelName",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#_modelFromModelName",
+    "access": null,
+    "description": null,
+    "lineNumber": 56,
+    "undocument": true,
+    "params": [
+      {
+        "name": "modelName",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 17,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_modelFromId",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#_modelFromId",
+    "access": null,
+    "description": null,
+    "lineNumber": 64,
+    "undocument": true,
+    "params": [
+      {
+        "name": "_id",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 18,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "get",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#get",
+    "access": null,
+    "description": "Asynchronous getter for mediators known by the Bucket.\n\nError are handled in the callback method, that *must* be\nprovided if you want to receive a result.",
+    "lineNumber": 76,
+    "params": [
+      {
+        "name": "_id",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "callback",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 19,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "add",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#add",
+    "access": null,
+    "description": "Adds one or more mediators to the Bucket.",
+    "lineNumber": 100,
+    "params": [
+      {
+        "name": "mediators",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 20,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_add",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#_add",
+    "access": null,
+    "description": "Adds one object to the Bucket.",
+    "lineNumber": 108,
+    "params": [
+      {
+        "name": "mediator",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 21,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "remove",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#remove",
+    "access": null,
+    "description": "Removes one or more objects from the Bucket.\n\nYou can pass an id or an mediator or a list of both, mediators\nand ids to this method.",
+    "lineNumber": 136,
+    "params": [
+      {
+        "name": "mediators",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 22,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_remove",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#_remove",
+    "access": null,
+    "description": "Removes one object from the bucket, either by id or mediator object.",
+    "lineNumber": 144,
+    "params": [
+      {
+        "name": "mediator",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 23,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_flatten",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#_flatten",
+    "access": null,
+    "description": null,
+    "lineNumber": 155,
+    "undocument": true,
+    "params": [
+      {
+        "name": "mediator",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 24,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_persist",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#_persist",
+    "access": null,
+    "description": null,
+    "lineNumber": 174,
+    "undocument": true,
+    "params": [
+      {
+        "name": "obj",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 25,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_read",
+    "memberof": "src/bucket.js~Bucket",
+    "longname": "src/bucket.js~Bucket#_read",
+    "access": null,
+    "description": null,
+    "lineNumber": 180,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 26,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -223,11 +563,11 @@
     "importPath": "pile.js/src/bucket.js",
     "importStyle": null,
     "description": "Those were managed behind the scene by a Bucket.\nFor each junction between two Meditors there\nwill be a Junction available.",
-    "lineNumber": 43,
+    "lineNumber": 189,
     "interface": false
   },
   {
-    "__docId__": 13,
+    "__docId__": 27,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -236,13 +576,13 @@
     "longname": "src/bucket.js~Junction#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 44,
+    "lineNumber": 190,
     "undocument": true,
     "params": [],
     "generator": false
   },
   {
-    "__docId__": 14,
+    "__docId__": 28,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -255,7 +595,7 @@
     "content": "\"use strict\";\n\nimport EventEmitter from 'events';\n\n\n/**\n * Find stuff in one or more Buckets.\n */\nexport class DumpsterDiver extends EventEmitter {\n  constructor() {\n    super();\n  }\n}\n"
   },
   {
-    "__docId__": 15,
+    "__docId__": 29,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -274,7 +614,7 @@
     ]
   },
   {
-    "__docId__": 16,
+    "__docId__": 30,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -289,7 +629,7 @@
     "generator": false
   },
   {
-    "__docId__": 17,
+    "__docId__": 31,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -299,10 +639,10 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "\"use strict\";\n\nimport EventEmitter from 'events';\nimport { generate } from 'shortid';\n\n\n/**\n * Clones an object with stringify to JSON and returning the parsed result.\n */\nfunction clone(o) { return JSON.parse(JSON.stringify(o)) }\n\n\n/**\n * Mediators know how to persist their data into JSON.\n *\n * They also fire events for Buckets to listen on changes.\n */\nexport class Mediator extends EventEmitter {\n  /**\n   * @data The initial data on construction\n   * @properties Informations about properties with possible related objects\n   */\n  constructor(data, properties) {\n    super();\n\n    this.data = { id: generate(), model: 'default' }\n\n    this.properties = new Map();\n    for (var prop in properties) {\n      this.properties.set(prop, properties[prop])\n    }\n\n    for (let prop in data) {\n      let value = data[prop];\n      if (this.properties.has(prop)) {\n        let property = this.properties.get(value);\n        if (property instanceof ForeignKeyProperty) {\n          this.data[prop] = value._id;\n          property.set(value);\n        }\n      } else {\n        this.data[prop] = data[prop];\n      }\n    }\n\n    var _id = this.data['model'] + ':' + this.data['id']\n    Object.defineProperty(this, '_id', { writable: false, value: _id });\n\n    for(let prop in this.data) {\n      if (prop == 'id' || prop == 'model') {\n        Object.defineProperty(this, prop,\n          {\n            writable: false,\n            value: this.data[prop]\n          });\n      } else {\n        Object.defineProperty(this, prop,\n          {\n            get: function() { return this._get(prop); },\n            set: function(value) { this._set(prop, value); }\n          });\n      }\n    }\n  }\n\n  load(prop, done) {\n    var me = this;\n    let property = me.properties.get(prop);\n    if (!property.loaded) {\n      this._bucket.get(me.data[prop], function(err, obj) {\n        property.value = obj\n        property.loaded = true\n        me.properties.set(prop, property)\n        done.call(me);\n      })\n    } else {\n      done.call(me);\n    }\n  }\n\n  /**\n   * Getter method that is aware subobjects.\n   */\n  _get(prop) {\n    if (this.properties.has(prop)) {\n      let property = this.properties.get(prop);\n      return property.value;\n    } else {\n      return this.data[prop]\n    }\n  }\n\n  /**\n   * Setter method for instance properties.\n   */\n  _set(prop, value) {\n    if (this.properties.has(prop) && !value) {\n      let property = this.properties.get(prop)\n      property.value = value\n      this.data[prop] = value;\n    } else {\n      if (this.data[prop] !== value) {\n        var old = clone(this.data);\n        this.data[prop] = value;\n        this.emit('changed', this, old);\n      }\n    }\n  }\n\n  /**\n   * Returns the underlying data object as json string.\n   */\n  toJSON() { return JSON.stringify(this.data); }\n}\n\n\n/**\n * Properties define special behaviours for data\n * that is bound to Mediators.\n */\nexport class Property extends EventEmitter {\n  constructor() {\n    super();\n  }\n}\n\n\n/**\n * A Junction to another Mediator.\n */\nexport class ForeignKeyProperty extends Property {\n  constructor() {\n    super();\n  }\n}\n\n\n/**\n * Many Junctions to other Mediators.\n */\nexport class ToManyProperty extends Property {\n  constructor() {\n    super();\n  }\n}\n"
+    "content": "\"use strict\";\n\nimport EventEmitter from 'events';\nimport { generate } from 'shortid';\n\n\n/**\n * Clones an object with stringify to JSON and returning the parsed result.\n */\nfunction clone(o) { return JSON.parse(JSON.stringify(o)) }\n\n\n/**\n * Mediators know how to persist their data into JSON.\n *\n * @emits 'changed' with (mediatorObj, eventData={prop: 'thePropName', old: oldValue})\n */\nexport class Mediator extends EventEmitter {\n  /**\n   * Mediators eat a data Object on construction.\n   * They have the following data by default:\n   * @param {data} Object The data for construction\n   */\n  constructor(data) {\n    super();\n\n    this._data = { id: generate(), model: 'default' };\n    this._refs = new Map();\n\n    for (let prop in data) {\n      let value = data[prop];\n      if (value instanceof Mediator) {\n        this._data[prop] = value._id;\n        this.references.set(value._id, value);\n      } else {\n        this._data[prop] = data[prop];\n      }\n    }\n\n    var _id = this._data['model'] + ':' + this._data['id']\n    Object.defineProperty(this, '_id', { writable: false, value: _id });\n\n    for(let prop in this._data) {\n      if (prop == 'id' || prop == 'model') {\n        Object.defineProperty(this, prop,\n          {\n            writable: false,\n            value: this._data[prop]\n          });\n      } else {\n        Object.defineProperty(this, prop,\n          {\n            get: function() { return this._get(prop); },\n            set: function(value) { this._set(prop, value); }\n          });\n      }\n    }\n  }\n\n  /**\n   * Getter method that is aware references.\n   *\n   * @param {string} prop The name of the property\n   * @returns {mixed} The value of the property.\n   */\n  _get(prop) {\n    let value = this._data[prop];\n    if (this._refs.has(value)) {\n      return this._refs.get(value);\n    }\n    else { return value; }\n  }\n\n  /**\n   * Setter method for instance properties that are encapsulated in _data.\n   * The setter tracks references in the seperate map _refs.\n   *\n   * @param   {string} prop The name of the property to set.\n   * @param   {mixed} value The new value for the given prop.\n   * @emits   'changed' with\n   *          (mediatorObj, eventData={prop: 'thePropName', old: oldValue})\n   */\n  _set(prop, value) {\n    let cur;\n    if (value instanceof Mediator) {\n      cur = this._refs.get(this._data[prop]);\n      if (cur) { this._refs.delete(this._data[prop]); }\n      this._refs.set(value._id, value);\n      this._data[prop] = value._id\n    } else {\n      cur = this._data[prop]\n      this._data[prop] = value\n    }\n    this.emit('changed', this, {prop: prop, old: cur});\n  }\n\n  /**\n   * Returns the underlying data object as json string.\n   *\n   * @returns {string} This object as a JSON string.\n   */\n  toJSON() { return JSON.stringify(this._data); }\n}\n"
   },
   {
-    "__docId__": 18,
+    "__docId__": 32,
     "kind": "function",
     "static": true,
     "variation": null,
@@ -331,7 +671,7 @@
     "generator": false
   },
   {
-    "__docId__": 19,
+    "__docId__": 33,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -342,15 +682,23 @@
     "export": true,
     "importPath": "pile.js/src/mediator.js",
     "importStyle": "{Mediator}",
-    "description": "Mediators know how to persist their data into JSON.\n\nThey also fire events for Buckets to listen on changes.",
+    "description": "Mediators know how to persist their data into JSON.",
     "lineNumber": 18,
+    "emits": [
+      {
+        "types": [
+          "*"
+        ],
+        "description": "'changed' with (mediatorObj, eventData={prop: 'thePropName', old: oldValue})"
+      }
+    ],
     "interface": false,
     "extends": [
       "events~EventEmitter"
     ]
   },
   {
-    "__docId__": 20,
+    "__docId__": 34,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -358,45 +706,33 @@
     "memberof": "src/mediator.js~Mediator",
     "longname": "src/mediator.js~Mediator#constructor",
     "access": null,
-    "description": "",
-    "lineNumber": 23,
-    "unknown": [
-      {
-        "tagName": "@data",
-        "tagValue": "The initial data on construction"
-      },
-      {
-        "tagName": "@properties",
-        "tagValue": "Informations about properties with possible related objects"
-      }
-    ],
+    "description": "Mediators eat a data Object on construction.\nThey have the following data by default:",
+    "lineNumber": 24,
     "params": [
       {
-        "name": "data",
+        "nullable": null,
         "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "properties",
-        "types": [
-          "*"
-        ]
+          "data"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "Object",
+        "description": "The data for construction"
       }
     ],
     "generator": false
   },
   {
-    "__docId__": 21,
+    "__docId__": 35,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "data",
+    "name": "_data",
     "memberof": "src/mediator.js~Mediator",
-    "longname": "src/mediator.js~Mediator#data",
+    "longname": "src/mediator.js~Mediator#_data",
     "access": null,
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 27,
     "undocument": true,
     "type": {
       "types": [
@@ -405,13 +741,13 @@
     }
   },
   {
-    "__docId__": 22,
+    "__docId__": 36,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "properties",
+    "name": "_refs",
     "memberof": "src/mediator.js~Mediator",
-    "longname": "src/mediator.js~Mediator#properties",
+    "longname": "src/mediator.js~Mediator#_refs",
     "access": null,
     "description": null,
     "lineNumber": 28,
@@ -423,35 +759,7 @@
     }
   },
   {
-    "__docId__": 23,
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "load",
-    "memberof": "src/mediator.js~Mediator",
-    "longname": "src/mediator.js~Mediator#load",
-    "access": null,
-    "description": null,
-    "lineNumber": 66,
-    "undocument": true,
-    "params": [
-      {
-        "name": "prop",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "done",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "generator": false
-  },
-  {
-    "__docId__": 24,
+    "__docId__": 37,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -459,25 +767,38 @@
     "memberof": "src/mediator.js~Mediator",
     "longname": "src/mediator.js~Mediator#_get",
     "access": null,
-    "description": "Getter method that is aware subobjects.",
-    "lineNumber": 84,
+    "description": "Getter method that is aware references.",
+    "lineNumber": 66,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{mixed} The value of the property."
+      }
+    ],
     "params": [
       {
-        "name": "prop",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "prop",
+        "description": "The name of the property"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "mixed"
+      ],
+      "spread": false,
+      "description": "The value of the property."
     },
     "generator": false
   },
   {
-    "__docId__": 25,
+    "__docId__": 38,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -485,26 +806,42 @@
     "memberof": "src/mediator.js~Mediator",
     "longname": "src/mediator.js~Mediator#_set",
     "access": null,
-    "description": "Setter method for instance properties.",
-    "lineNumber": 96,
+    "description": "Setter method for instance properties that are encapsulated in _data.\nThe setter tracks references in the seperate map _refs.",
+    "lineNumber": 83,
     "params": [
       {
-        "name": "prop",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "prop",
+        "description": "The name of the property to set."
       },
       {
+        "nullable": null,
+        "types": [
+          "mixed"
+        ],
+        "spread": false,
+        "optional": false,
         "name": "value",
+        "description": "The new value for the given prop."
+      }
+    ],
+    "emits": [
+      {
         "types": [
           "*"
-        ]
+        ],
+        "description": "'changed' with\n         (mediatorObj, eventData={prop: 'thePropName', old: oldValue})"
       }
     ],
     "generator": false
   },
   {
-    "__docId__": 26,
+    "__docId__": 39,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -513,119 +850,26 @@
     "longname": "src/mediator.js~Mediator#toJSON",
     "access": null,
     "description": "Returns the underlying data object as json string.",
-    "lineNumber": 113,
+    "lineNumber": 102,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{string} This object as a JSON string."
+      }
+    ],
     "params": [],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "string"
+      ],
+      "spread": false,
+      "description": "This object as a JSON string."
     },
     "generator": false
   },
   {
-    "__docId__": 27,
-    "kind": "class",
-    "static": true,
-    "variation": null,
-    "name": "Property",
-    "memberof": "src/mediator.js",
-    "longname": "src/mediator.js~Property",
-    "access": null,
-    "export": true,
-    "importPath": "pile.js/src/mediator.js",
-    "importStyle": "{Property}",
-    "description": "Properties define special behaviours for data\nthat is bound to Mediators.",
-    "lineNumber": 121,
-    "interface": false,
-    "extends": [
-      "events~EventEmitter"
-    ]
-  },
-  {
-    "__docId__": 28,
-    "kind": "constructor",
-    "static": false,
-    "variation": null,
-    "name": "constructor",
-    "memberof": "src/mediator.js~Property",
-    "longname": "src/mediator.js~Property#constructor",
-    "access": null,
-    "description": null,
-    "lineNumber": 122,
-    "undocument": true,
-    "params": [],
-    "generator": false
-  },
-  {
-    "__docId__": 29,
-    "kind": "class",
-    "static": true,
-    "variation": null,
-    "name": "ForeignKeyProperty",
-    "memberof": "src/mediator.js",
-    "longname": "src/mediator.js~ForeignKeyProperty",
-    "access": null,
-    "export": true,
-    "importPath": "pile.js/src/mediator.js",
-    "importStyle": "{ForeignKeyProperty}",
-    "description": "A Junction to another Mediator.",
-    "lineNumber": 131,
-    "interface": false,
-    "extends": [
-      "Property"
-    ]
-  },
-  {
-    "__docId__": 30,
-    "kind": "constructor",
-    "static": false,
-    "variation": null,
-    "name": "constructor",
-    "memberof": "src/mediator.js~ForeignKeyProperty",
-    "longname": "src/mediator.js~ForeignKeyProperty#constructor",
-    "access": null,
-    "description": null,
-    "lineNumber": 132,
-    "undocument": true,
-    "params": [],
-    "generator": false
-  },
-  {
-    "__docId__": 31,
-    "kind": "class",
-    "static": true,
-    "variation": null,
-    "name": "ToManyProperty",
-    "memberof": "src/mediator.js",
-    "longname": "src/mediator.js~ToManyProperty",
-    "access": null,
-    "export": true,
-    "importPath": "pile.js/src/mediator.js",
-    "importStyle": "{ToManyProperty}",
-    "description": "Many Junctions to other Mediators.",
-    "lineNumber": 141,
-    "interface": false,
-    "extends": [
-      "Property"
-    ]
-  },
-  {
-    "__docId__": 32,
-    "kind": "constructor",
-    "static": false,
-    "variation": null,
-    "name": "constructor",
-    "memberof": "src/mediator.js~ToManyProperty",
-    "longname": "src/mediator.js~ToManyProperty#constructor",
-    "access": null,
-    "description": null,
-    "lineNumber": 142,
-    "undocument": true,
-    "params": [],
-    "generator": false
-  },
-  {
-    "__docId__": 34,
+    "__docId__": 41,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -638,7 +882,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 35,
+    "__docId__": 42,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -651,7 +895,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 36,
+    "__docId__": 43,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -664,7 +908,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 37,
+    "__docId__": 44,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -677,7 +921,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 38,
+    "__docId__": 45,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -690,7 +934,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 39,
+    "__docId__": 46,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -703,7 +947,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 40,
+    "__docId__": 47,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -716,7 +960,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 41,
+    "__docId__": 48,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -729,7 +973,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 42,
+    "__docId__": 49,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -742,7 +986,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 43,
+    "__docId__": 50,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -755,7 +999,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 44,
+    "__docId__": 51,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -768,7 +1012,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 45,
+    "__docId__": 52,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -781,7 +1025,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 46,
+    "__docId__": 53,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -794,7 +1038,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 47,
+    "__docId__": 54,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -807,7 +1051,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 48,
+    "__docId__": 55,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -820,7 +1064,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 49,
+    "__docId__": 56,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -833,7 +1077,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 50,
+    "__docId__": 57,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -846,7 +1090,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 51,
+    "__docId__": 58,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -859,7 +1103,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 52,
+    "__docId__": 59,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -872,7 +1116,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 53,
+    "__docId__": 60,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -885,7 +1129,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 54,
+    "__docId__": 61,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -898,7 +1142,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 55,
+    "__docId__": 62,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -911,7 +1155,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 56,
+    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -924,7 +1168,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 57,
+    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -937,7 +1181,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 58,
+    "__docId__": 65,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -950,7 +1194,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 59,
+    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -963,7 +1207,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 60,
+    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -976,7 +1220,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 61,
+    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -989,7 +1233,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 62,
+    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1002,7 +1246,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 63,
+    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1015,7 +1259,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 64,
+    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1028,7 +1272,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 65,
+    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1041,7 +1285,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 66,
+    "__docId__": 73,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1054,7 +1298,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 67,
+    "__docId__": 74,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1067,7 +1311,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 68,
+    "__docId__": 75,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1080,7 +1324,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 69,
+    "__docId__": 76,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1093,7 +1337,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 70,
+    "__docId__": 77,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1106,7 +1350,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 71,
+    "__docId__": 78,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1119,7 +1363,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 72,
+    "__docId__": 79,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1132,7 +1376,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 73,
+    "__docId__": 80,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1145,7 +1389,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 74,
+    "__docId__": 81,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1158,7 +1402,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 75,
+    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1171,7 +1415,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 76,
+    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1184,7 +1428,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 77,
+    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1197,7 +1441,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 78,
+    "__docId__": 85,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1210,7 +1454,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 79,
+    "__docId__": 86,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1223,7 +1467,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 80,
+    "__docId__": 87,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1236,7 +1480,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 82,
+    "__docId__": 89,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1249,7 +1493,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 83,
+    "__docId__": 90,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1262,7 +1506,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 84,
+    "__docId__": 91,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1275,7 +1519,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 85,
+    "__docId__": 92,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1288,7 +1532,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 86,
+    "__docId__": 93,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1301,7 +1545,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 87,
+    "__docId__": 94,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1314,7 +1558,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 88,
+    "__docId__": 95,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1327,7 +1571,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 89,
+    "__docId__": 96,
     "kind": "external",
     "static": true,
     "variation": null,
