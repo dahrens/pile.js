@@ -40,6 +40,10 @@ export class Mediator extends EventEmitter {
     var _id = this._data['model'] + ':' + this._data['id']
     Object.defineProperty(this, '_id', { writable: false, value: _id });
 
+    Object.defineProperty(this, 'refs', {
+      get: function() { return this._refs.values(); }
+    })
+
     for(let prop in this._data) {
       if (prop == 'id' || prop == 'model') {
         Object.defineProperty(this, prop,

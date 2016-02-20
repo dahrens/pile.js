@@ -44,6 +44,10 @@ export class Bucket extends EventEmitter {
        */
       this.models = {};
       /**
+       * @type {Object} An object with mediator._id => [list of junction _ids]
+       */
+      this.junctions = new Map();
+      /**
        * @type {Object} A Bottom used for persisting objects somewhere.
        */
       this.bottom = bottom;
@@ -113,9 +117,21 @@ export class Bucket extends EventEmitter {
   /**
    * Adds one or more mediators to the Bucket.
    */
-  add(mediators) {
-    let arr = Array.isArray(mediators) ? mediators : [mediators]
-    for (var i in arr) { this._add(arr[i]); }
+  add(iter) {
+    let mediators = iter[Symbol.iterator] !== undefined ? iter : [iter]
+    for (let mediator of mediators) {
+      this._add(mediator);
+
+      this.add(mediator.refs);
+
+      let junctions = []
+      for (let referred of mediator.refs) {
+        let junction = new Junction(mediator, referred)
+        junctions.push(junction._id);
+        this._add(junction);
+      }
+      this.junctions.set(mediator._id, junctions);
+    }
   }
 
   /**
@@ -160,9 +176,24 @@ export class Bucket extends EventEmitter {
 
 /**
  * Those were managed behind the scene by a Bucket.
- * For each junction between two Meditors there
+ * For each relation between two Mediators there
  * will be a Junction available.
  */
-class Junction {
-  constructor() {}
+class Junction extends Mediator {
+  /**
+   * Constructs the junction.
+   *
+   * @param {string|Mediator} from The parent of the Junction.
+   * @param {string|Mediator} to The child of the Junction.
+   */
+  constructor(from, to) {
+    from = (from instanceof Mediator) ? from._id : from;
+    to = (to instanceof Mediator) ? to._id : to;
+    super({
+      model: 'junction',
+      id: from + ':' + to,
+      from: from,
+      to: to
+    })
+  }
 }

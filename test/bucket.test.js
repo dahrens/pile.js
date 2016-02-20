@@ -64,6 +64,13 @@ describe('Bucket', function() {
         assert(false, "there should have been an error!")
       } catch (e) { assert.equal(e, "Must be a subclass of Mediator") }
     });
+    it('should add referred mediators and juntions.', function() {
+      bucket.add(fooman);
+      assert.equal(bucket.memory.size, 3, "something is missing in the bucket.");
+      assert(bucket.memory.get(fooman._id));
+      assert(bucket.memory.get(brain._id), "No brain in the bucket!");
+      assert(bucket.memory.get('junction:' + fooman._id + ':' + brain._id), "No juntion between fooman and his brain in the bucket!");
+    });
   });
 
   describe('#remove', function () {
@@ -77,7 +84,7 @@ describe('Bucket', function() {
     });
     it('should also accept lists of objects', function() {
       bucket.add([fooman, brain]);
-      assert.equal(bucket.memory.size, 2);
+      assert.equal(bucket.memory.size, 3);
       bucket.remove([fooman, brain]);
       assert.equal(bucket.memory.size, 0);
     });

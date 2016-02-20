@@ -33,8 +33,11 @@ describe('Mediator', function() {
     let brainz = new Brain();
     let humanz = new Human("humanz!", brainz);
     assert(humanz.brain, "no brain!");
-    assert.equal(humanz._data['brain'],brainz._id)
-  })
+    assert.equal(humanz._data['brain'],brainz._id);
+    for (let ref of humanz.refs) {
+      assert.equal(ref, brainz);
+    }
+  });
   it('should always have an id and model set.', function () {
     assert(m1.hasOwnProperty('id'));
     assert(m1.hasOwnProperty('model'));
