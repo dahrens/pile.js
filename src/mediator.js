@@ -18,7 +18,7 @@ function clone(o) { return JSON.parse(JSON.stringify(o)) }
 export class Mediator extends EventEmitter {
   /**
    * Mediators eat a data Object on construction.
-   * They have the following data by default:
+   *
    * @param {data} Object The data for construction
    */
   constructor(data) {

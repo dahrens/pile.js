@@ -29,10 +29,23 @@ function modelNameFromId(_id) {
  * Buckets store data in a flat manner.
  */
 export class Bucket extends EventEmitter {
+  /**
+   * Create a new Bucket, that can store different subclasses
+   * of Mediator.
+   */
   constructor(bottom) {
       super();
+      /**
+       * @type {Map} The inmemory store for the bucket.
+       */
       this.memory = new Map();
+      /**
+       * @type {Object} An object with keys for models and classes as value.
+       */
       this.models = {};
+      /**
+       * @type {Object} A Bottom used for persisting objects somewhere.
+       */
       this.bottom = bottom;
   }
 
@@ -41,6 +54,8 @@ export class Bucket extends EventEmitter {
    *
    * This means that the Bucket is able to persist those objects
    * into his own Namespace as seperate objects.
+   *
+   * @param {Mediator} cls The class that should be registered.
    */
   register(cls) {
       let instance = new cls();
@@ -50,6 +65,11 @@ export class Bucket extends EventEmitter {
       this.models[instance.model] = cls
   }
 
+  /**
+   * Unregister a class from this Bucket.
+   *
+   * @param {Mediator} cls The class that should be unregistered.
+   */
   unregister(cls) {
       throw "to be done..."
   }
@@ -82,10 +102,12 @@ export class Bucket extends EventEmitter {
       if (this.memory.has(_id)) {
         callback.call(me, null, this.memory.get(_id));
       } else {
-        callback.call(me, "Can not find id " + _id)
+        if (this.bottom) {
+          // TODO: what about loading from bottom?
+        } else {
+          callback.call(me, "Can not find id " + _id)
+        }
       }
-      // TODO: what about loading from bottom?
-
   }
 
   /**

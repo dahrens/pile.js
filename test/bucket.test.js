@@ -53,7 +53,8 @@ describe('Bucket', function() {
       assert.equal(bucket.memory.get(fooman._id), fooman);
     });
     it('should also accept lists of objects', function() {
-      var barman = new Human('barman');
+      let fooman = new Human('fooman');
+      let barman = new Human('barman');
       bucket.add([fooman, barman]);
       assert.equal(bucket.memory.size, 2);
     });
