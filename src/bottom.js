@@ -21,6 +21,9 @@ export class RedisBottom {
    * @param {namespace} string The namespace used as prefix for redis.
    */
   constructor(namespace="unknown") {
+    /**
+     * @type {RedisClient} node_redis based client to talk to redis.
+     */
     this.client = createClient({prefix: namespace + ":"})
   }
 

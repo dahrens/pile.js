@@ -77,6 +77,13 @@ export class Bucket extends EventEmitter {
       throw "to be done..."
   }
 
+  /**
+   * Subscribing this bucket, means getting notified of all changes made here.
+   * The subscribing bucket will automatically include all models saved in this
+   * Bucket.
+   *
+   * @param {Bucket} bucket The bucket that will be notified on all changes.
+   */
   subscribe(bucket) {
     this.on('add', mediator => bucket.add(mediator));
     this.on('remove', mediatorId => bucket.remove(mediatorId));
@@ -184,6 +191,11 @@ export class Bucket extends EventEmitter {
     this.emit('remove', _id);
   }
 
+  /**
+   * Resolve a model class by name.#
+   *
+   * @param {string} modelName The name of the model.
+   */
   _modelFromModelName(modelName) {
       let model = this.models[modelName]
       if (!model) {
@@ -192,6 +204,11 @@ export class Bucket extends EventEmitter {
       return model
   }
 
+  /**
+   * Resolve a model class by id.
+   *
+   * @param {string} _id The id to search for.
+   */
   _modelFromId(_id) {
       return this._modelFromModelName(
         modelNameFromId(_id)
@@ -202,6 +219,8 @@ export class Bucket extends EventEmitter {
 
 /**
  * Resolves the modelName from in _id (persistence id).
+ *
+ * @param {string} _id The id to search for a modelName in.
  */
 function modelNameFromId(_id) {
     let modelName = _id.split(':')[0];
