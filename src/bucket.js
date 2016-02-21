@@ -184,7 +184,7 @@ export class Bucket extends EventEmitter {
  * For each relation between two Mediators there
  * will be a Junction available.
  */
-class Junction extends Mediator {
+export class Junction extends Mediator {
   /**
    * Constructs the junction.
    *
