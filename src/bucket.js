@@ -145,6 +145,7 @@ export class Bucket extends EventEmitter {
   _add(mediator) {
       var me = this;
       me.memory.set(mediator._id, mediator);
+      if (this.bottom) { this.bottom.write(mediator) }
 
       mediator.on("changed", function(mediator, oldData) {
         me.memory.set(mediator._id, mediator);
@@ -179,6 +180,7 @@ export class Bucket extends EventEmitter {
    */
   _remove(_id) {
     this.memory.delete(_id);
+    if (this.bottom) { this.bottom.delete(_id) }
   }
 }
 

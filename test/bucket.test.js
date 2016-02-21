@@ -1,6 +1,7 @@
 "use strict";
 
 import { assert } from 'chai';
+import { spy } from 'sinon';
 
 import { Bucket, Junction } from 'src/bucket';
 import { Human, Brain } from 'test/lib/config';
@@ -147,4 +148,47 @@ describe('Juntion', function() {
     assert.equal(junction.from, pinky._id);
     assert.equal(junction.to, brain._id);
   })
+});
+
+
+describe('Bucket with Bottom set.', function() {
+  let bottom,
+      bucket,
+      pinky,
+      brain
+
+  beforeEach(function() {
+    bottom = {
+      write: spy(),
+      delete: spy()
+    }
+    bucket = new Bucket(bottom);
+    brain = new Brain();
+    pinky = new Brain();
+  });
+  describe('#add', function() {
+    it('should call write for one added mediator', function() {
+      bucket.add(brain);
+      assert(bottom.write.withArgs(brain).called, "has not called bottom.write at all");
+    });
+    it('should call write for more added mediators', function() {
+      bucket.add([pinky, brain]);
+      assert(bottom.write.withArgs(pinky).calledOnce, "has not called bottom.write with pinky");
+      assert(bottom.write.withArgs(brain).calledOnce, "has not called bottom.write with brain");
+    });
+  });
+  describe('#remove', function() {
+    beforeEach(function() {
+      bucket.add([pinky, brain]);
+    })
+    it('should call write for one added mediator', function() {
+      bucket.remove(brain);
+      assert(bottom.delete.withArgs(brain._id).called, "has not called bottom.delete with brain._id");
+    });
+    it('should call delete for more added mediators', function() {
+      bucket.remove([pinky, brain])
+      assert(bottom.delete.withArgs(pinky._id).calledOnce, "has not called bottom.delete with pinky._id");
+      assert(bottom.delete.withArgs(brain._id).calledOnce, "has not called bottom.delete with brain._id");
+    });
+  });
 });
