@@ -44,7 +44,7 @@ export class Bucket extends EventEmitter {
        */
       this.models = {};
       /**
-       * @type {Object} An object with mediator._id => [list of junction _ids]
+       * @type {Object} An Map with mediator._id => [list of junction _ids]
        */
       this.junctions = new Map();
       /**
@@ -156,9 +156,9 @@ export class Bucket extends EventEmitter {
    * You can pass an id or an mediator or a list of both, mediators
    * and ids to this method.
    */
-  remove(mediators) {
-    let arr = Array.isArray(mediators) ? mediators : [mediators]
-    for (var i in arr) { this._remove(arr[i]); }
+  remove(iter) {
+    let mediators = iter[Symbol.iterator] !== undefined ? iter : [iter]
+    for (var i in mediators) { this._remove(mediators[i]); }
   }
 
   /**
@@ -166,10 +166,15 @@ export class Bucket extends EventEmitter {
    */
   _remove(mediator) {
     if (typeof mediator !== "string" && !(mediator instanceof Mediator)) {
-      throw "Must be a subclass of Mediator or an id.";
+      throw "Must be a subclass of Mediator or an id." + mediator;
     }
     let _id = (typeof mediator === "string") ? mediator : mediator._id;
     this.memory.delete(_id);
+    let junctions = this.junctions.get(_id) || [];
+    for (let juncId of junctions) {
+      let junc = this.memory.get(juncId)
+      this.remove([junc.to, juncId]);
+    }
   }
 }
 

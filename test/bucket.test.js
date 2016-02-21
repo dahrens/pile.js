@@ -67,7 +67,7 @@ describe('Bucket', function() {
     it('should add referred mediators and juntions.', function() {
       bucket.add(fooman);
       assert.equal(bucket.memory.size, 3, "something is missing in the bucket.");
-      assert(bucket.memory.get(fooman._id));
+      assert(bucket.memory.get(fooman._id), "No fooman in bucket.");
       assert(bucket.memory.get(brain._id), "No brain in the bucket!");
       assert(bucket.memory.get('junction:' + fooman._id + ':' + brain._id), "No juntion between fooman and his brain in the bucket!");
     });
@@ -84,9 +84,24 @@ describe('Bucket', function() {
     });
     it('should also accept lists of objects', function() {
       bucket.add([fooman, brain]);
-      assert.equal(bucket.memory.size, 3);
-      bucket.remove([fooman, brain]);
-      assert.equal(bucket.memory.size, 0);
+      bucket.remove([fooman,brain]);
+      assert(!bucket.memory.get(fooman._id));
+      assert(!bucket.memory.get(brain._id));
+    });
+    it('should remove children automatically', function() {
+      bucket.add(fooman);
+      assert(bucket.memory.get(brain._id));
+      bucket.remove(fooman);
+      assert(!bucket.memory.get(fooman._id));
+      assert(!bucket.memory.get(brain._id));
+    });
+    it('should handle removal of junctions', function() {
+      bucket.add(fooman);
+      assert(bucket.memory.get('junction:'+fooman._id+':'+brain._id));
+      bucket.remove(fooman);
+      assert(!bucket.memory.get(fooman._id));
+      assert(!bucket.memory.get(brain._id));
+      assert(!bucket.memory.get('junction:'+fooman._id+':'+brain._id));
     });
   });
 
