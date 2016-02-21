@@ -45,6 +45,21 @@ describe('Bucket', function() {
     });
   });
 
+  describe('#subscribe', function () {
+    var mirror;
+    beforeEach(function() {
+      mirror = new Bucket();
+    });
+    it('should allow buckets the subscription.', function() {
+      bucket.subscribe(mirror);
+      bucket.add(brain);
+      assert.equal(mirror.memory.get(brain._id), bucket.memory.get(brain._id));
+      bucket.add(fooman);
+      assert.equal(mirror.memory.get(fooman._id), bucket.memory.get(fooman._id));
+      assert.equal(mirror.memory.get('junction:' + fooman._id + ':' + brain._id), bucket.memory.get('junction:' + fooman._id + ':' + brain._id));
+    });
+  });
+
   describe('#add', function () {
     beforeEach(function() {
       bucket.register(Human);
@@ -128,7 +143,7 @@ describe('Bucket', function() {
   })
 });
 
-describe('Juntion', function() {
+describe('Junction', function() {
   var junc, pinky, brain;
   beforeEach(function() {
     pinky = new Brain();

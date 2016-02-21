@@ -4,6 +4,11 @@ import { Mediator } from 'src/mediator';
 import { flatten } from 'src/bucket';
 
 /**
+ * Appends a 's' to the given string.
+ */
+function pluralize(s) { return s + 's'; }
+
+/**
  * Persists objects into redis.
  */
 export class RedisBottom {
@@ -33,8 +38,8 @@ export class RedisBottom {
    */
   write(mediators) {
     mediators = Array.isArray(mediators) ? mediators : [mediators]
-    for (var i = 0; i < mediators.length; i++) {
-      this.client.hmset(this.ground(mediators[i]));
+    for (let mediator of mediators) {
+      this.client.hmset(this.ground(mediator));
     }
   }
 

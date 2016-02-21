@@ -6,12 +6,6 @@ import { Mediator } from 'src/mediator';
 
 
 /**
- * Appends a 's' to the given string.
- */
-function pluralize(s) { return s + 's'; }
-
-
-/**
  * Resolves the modelName from in _id (persistence id).
  */
 function modelNameFromId(_id) {
@@ -51,6 +45,10 @@ export class Bucket extends EventEmitter {
        * @type {Object} A Bottom used for persisting objects somewhere.
        */
       this.bottom = bottom;
+      /**
+       * @type {Map}
+       */
+      this.subscribers = new Map();
   }
 
   /**
@@ -90,6 +88,11 @@ export class Bucket extends EventEmitter {
       return this._modelFromModelName(
         modelNameFromId(_id)
       );
+  }
+
+  subscribe(bucket) {
+    this.on('add', mediator => bucket.add(mediator));
+    this.on('remove', mediatorId => bucket.remove(mediatorId));
   }
 
   /**
@@ -141,15 +144,17 @@ export class Bucket extends EventEmitter {
 
   /**
    * Adds one mediator to the Bucket.
+   *
+   * @emits 'add'
    */
   _add(mediator) {
       var me = this;
       me.memory.set(mediator._id, mediator);
       if (this.bottom) { this.bottom.write(mediator) }
-
       mediator.on("changed", function(mediator, oldData) {
         me.memory.set(mediator._id, mediator);
-      })
+      });
+      this.emit('add', mediator);
   }
 
   /**
@@ -172,15 +177,17 @@ export class Bucket extends EventEmitter {
         this.remove([junc.to, juncId]);
       }
     }
-
   }
 
   /**
    * Removes one mediator by its _id from the bucket.
+   *
+   * @emits 'remove'
    */
   _remove(_id) {
     this.memory.delete(_id);
     if (this.bottom) { this.bottom.delete(_id) }
+    this.emit('remove', _id);
   }
 }
 
