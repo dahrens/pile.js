@@ -11,15 +11,16 @@
     "source-map-support": "^0.4.0"
   },
   "devDependencies": {
-    "babel-polyfill": "^6.3.14",
-    "grunt": "^0.4.5",
     "app-module-path": "^1.0.5",
+    "async": "^1.5.2",
+    "babel-polyfill": "^6.3.14",
     "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.4.3",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "chai": "^3.5.0",
     "esdoc": "^0.4.3",
+    "grunt": "^0.4.5",
     "grunt-babel": "^6.0.0",
     "grunt-browserify": "^4.0.1",
     "grunt-contrib-watch": "^0.6.1",

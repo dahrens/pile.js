@@ -1,14 +1,39 @@
 "use strict";
-
 import { assert } from 'chai';
 
 import { createClient } from 'redis';
+
 import { RedisBottom } from 'src/bottom';
 import { Mediator } from 'src/mediator'
 import { Human, Brain } from 'test/lib/config';
 
 
 describe('RedisBottom', function() {
+  /**
+   * NOTE: This testsuite currently relies on a *running redis* instance.
+   * I am at the moment not familiar with redis. That's why i need to
+   * see how it behaves in certain cases.
+   * Although it does not strictly follow the idea of unit testing it
+   * will stay like this for now.
+   */
+  var test;
+  var redis_cleanup = function(done) {
+    test.keys('mocha*', function(err, rows) {
+      let async = require("async");
+      async.each(rows, function(row, cb) {
+        test.del(row, cb)
+      }, done);
+    });
+  }
+
+
+  before(function(done) {
+    test = createClient();
+    test.on("error", done);
+    test.on("ready", done);
+  });
+  after(redis_cleanup);
+
   var redis_bottom,
       client,
       buck,
@@ -17,6 +42,7 @@ describe('RedisBottom', function() {
   beforeEach(function() {
     redis_bottom = new RedisBottom("mocha");
     client = redis_bottom.client;
+
     buck = new Mediator({
       model: 'chicken',
       id: 'buck'
@@ -24,11 +50,6 @@ describe('RedisBottom', function() {
     brain = new Brain();
     fooman = new Human("fooman", brain);
   });
-  afterEach(function(done) {
-    client.flushall(function() {
-      done();
-    });
- });
   describe('#ground', function() {
     it('should convert simple objects for usage with redis.hmset', function() {
       let alloy = redis_bottom.ground(buck);
@@ -44,11 +65,7 @@ describe('RedisBottom', function() {
     });
   });
   describe('#write', function() {
-    afterEach(function(done) {
-      client.flushall(function() {
-        done();
-      });
-    })
+    afterEach(redis_cleanup);
     it('should persist simple mediator in redis hashmap.', function(done) {
       redis_bottom.write(buck);
       client.hgetall(buck._id, function(err, reply) {
@@ -73,5 +90,11 @@ describe('RedisBottom', function() {
         done();
       });
     });
+  });
+  describe('#read', function() {
+    beforeEach(function() {
+      bottom.write(buck);
+    });
+    afterEach(redis_cleanup);
   });
 });

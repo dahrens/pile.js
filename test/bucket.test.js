@@ -220,4 +220,8 @@ describe('Bucket with Bottom set.', function() {
       assert(bottom.delete.withArgs(brain._id).calledOnce, "has not called bottom.delete with brain._id");
     });
   });
+  describe('#sync', function() {
+    bucket = new Bucket();
+    bucket.bottom = bottom;
+  });
 });

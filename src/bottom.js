@@ -1,6 +1,8 @@
 "use strict";
 
 import { createClient } from 'redis';
+import EventEmitter from 'events';
+
 import { Mediator } from 'src/mediator';
 import { flatten } from 'src/bucket';
 
@@ -13,7 +15,7 @@ function pluralize(s) { return s + 's'; }
 /**
  * Persists objects into redis.
  */
-export class RedisBottom {
+export class RedisBottom extends EventEmitter {
 
   /**
    * Constructs a new RedisBottom.
@@ -21,6 +23,7 @@ export class RedisBottom {
    * @param {namespace} string The namespace used as prefix for redis.
    */
   constructor(namespace="unknown") {
+    super();
     /**
      * @type {RedisClient} node_redis based client to talk to redis.
      */
@@ -51,10 +54,18 @@ export class RedisBottom {
   }
 
   /**
-   * Reads data from redis backend.
+   * Read everything that is known by this bottom.
    */
-  read(id) {
+  read() {
 
+  }
+
+  readModelSet(setName) {
+    let me = this;
+    this.client.smembers(setName, function(err, reply) {
+      if (err) { throw err }
+      me.emit('models', reply)
+    })
   }
 
   /**
