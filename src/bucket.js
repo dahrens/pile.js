@@ -120,6 +120,11 @@ export class Bucket extends EventEmitter {
   add(iter) {
     let mediators = iter[Symbol.iterator] !== undefined ? iter : [iter]
     for (let mediator of mediators) {
+
+      if (!(mediator instanceof Mediator)) {
+        throw "Must be a subclass of Mediator";
+      }
+
       this._add(mediator);
 
       this.add(mediator.refs);
@@ -135,19 +140,15 @@ export class Bucket extends EventEmitter {
   }
 
   /**
-   * Adds one object to the Bucket.
+   * Adds one mediator to the Bucket.
    */
   _add(mediator) {
       var me = this;
-      if (!(mediator instanceof Mediator)) {
-        throw "Must be a subclass of Mediator";
-      } else {
-        me.memory.set(mediator._id, mediator);
+      me.memory.set(mediator._id, mediator);
 
-        mediator.on("changed", function(mediator, oldData) {
-          me.memory.set(mediator._id, mediator);
-        })
-      }
+      mediator.on("changed", function(mediator, oldData) {
+        me.memory.set(mediator._id, mediator);
+      })
   }
 
   /**
@@ -158,23 +159,26 @@ export class Bucket extends EventEmitter {
    */
   remove(iter) {
     let mediators = iter[Symbol.iterator] !== undefined ? iter : [iter]
-    for (var i in mediators) { this._remove(mediators[i]); }
+    for (let mediator of mediators) {
+      if (typeof mediator !== "string" && !(mediator instanceof Mediator)) {
+        throw "Must be a subclass of Mediator or an id." + mediator;
+      }
+      let _id = (typeof mediator === "string") ? mediator : mediator._id;
+      this._remove(_id);
+      let junctions = this.junctions.get(_id) || [];
+      for (let juncId of junctions) {
+        let junc = this.memory.get(juncId)
+        this.remove([junc.to, juncId]);
+      }
+    }
+
   }
 
   /**
-   * Removes one object from the bucket, either by id or mediator object.
+   * Removes one mediator by its _id from the bucket.
    */
-  _remove(mediator) {
-    if (typeof mediator !== "string" && !(mediator instanceof Mediator)) {
-      throw "Must be a subclass of Mediator or an id." + mediator;
-    }
-    let _id = (typeof mediator === "string") ? mediator : mediator._id;
+  _remove(_id) {
     this.memory.delete(_id);
-    let junctions = this.junctions.get(_id) || [];
-    for (let juncId of junctions) {
-      let junc = this.memory.get(juncId)
-      this.remove([junc.to, juncId]);
-    }
   }
 }
 
