@@ -15,22 +15,20 @@ describe('RedisBottom', function() {
       fooman,
       brain;
   beforeEach(function() {
-    client = createClient({prefix:"mocha:"})
-    redis_bottom = new RedisBottom(client);
-    redis_bottom.client = client;
+    redis_bottom = new RedisBottom("mocha");
+    client = redis_bottom.client;
     buck = new Mediator({
       model: 'chicken',
       id: 'buck'
     });
     brain = new Brain();
     fooman = new Human("fooman", brain);
-
   });
   afterEach(function(done) {
     client.flushall(function() {
       done();
     });
-  })
+ });
   describe('#ground', function() {
     it('should convert simple objects for usage with redis.hmset', function() {
       let alloy = redis_bottom.ground(buck);

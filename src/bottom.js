@@ -42,6 +42,8 @@ export class RedisBottom {
     mediators = Array.isArray(mediators) ? mediators : [mediators]
     for (let mediator of mediators) {
       this.client.hmset(this.ground(mediator));
+      let setName = pluralize(mediator.model);
+      this.client.sadd(setName, mediator.id);
     }
   }
 

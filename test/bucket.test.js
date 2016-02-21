@@ -1,7 +1,7 @@
 "use strict";
 
 import { assert } from 'chai';
-import { spy } from 'sinon';
+import { spy, stub } from 'sinon';
 
 import { Bucket, Junction } from 'src/bucket';
 import { Human, Brain } from 'test/lib/config';
@@ -183,7 +183,9 @@ describe('Bucket with Bottom set.', function() {
       write: spy(),
       delete: spy()
     }
-    bucket = new Bucket();
+    bucket = new Bucket('mocha', {
+      'brain': Brain
+    });
     bucket.bottom = bottom;
     brain = new Brain();
     pinky = new Brain();
@@ -197,6 +199,11 @@ describe('Bucket with Bottom set.', function() {
       bucket.add([pinky, brain]);
       assert(bottom.write.withArgs(pinky).calledOnce, "has not called bottom.write with pinky");
       assert(bottom.write.withArgs(brain).calledOnce, "has not called bottom.write with brain");
+    });
+    it('should show a warning, if you add not registered models to a Bucket with a Bottom', function() {
+      stub(console, 'warn');
+      bucket.add(new Human());
+      assert(console.warn.called, "There was no warning.");
     });
   });
   describe('#remove', function() {

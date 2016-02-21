@@ -6,17 +6,6 @@ import { Mediator } from 'src/mediator';
 
 
 /**
- * Resolves the modelName from in _id (persistence id).
- */
-function modelNameFromId(_id) {
-    let modelName = _id.split(':')[0];
-    if (!modelName) {
-        throw "No known modelName found in _id: " + _id;
-    }
-    return modelName
-}
-
-/**
  * Buckets are used to create your overall pile.
  * Use them to cluster your objects together.
  *
@@ -56,6 +45,14 @@ export class Bucket extends EventEmitter {
   }
 
   /**
+   * Synchronizes the Bucket with its Bottom. This is called after creation
+   * of a Bucket, that has a
+   */
+  sync() {
+
+  }
+
+  /**
    * Registers a cls for this Bucket.
    *
    * This means that the Bucket is able to persist those objects
@@ -78,20 +75,6 @@ export class Bucket extends EventEmitter {
    */
   unregister(cls) {
       throw "to be done..."
-  }
-
-  _modelFromModelName(modelName) {
-      let model = this.models[modelName]
-      if (!model) {
-        throw "No model class found for modelName: " + modelName;
-      }
-      return model
-  }
-
-  _modelFromId(_id) {
-      return this._modelFromModelName(
-        modelNameFromId(_id)
-      );
   }
 
   subscribe(bucket) {
@@ -152,12 +135,19 @@ export class Bucket extends EventEmitter {
    * @emits 'add'
    */
   _add(mediator) {
+      this.memory.set(mediator._id, mediator);
+      if (this.bottom) {
+        if (!this.models.hasOwnProperty(mediator.model)) {
+          console.warn("You have added the model " + mediator.model + " to persistent bucket, that does not know about the class. Reconstruction from Bottom will fail.");
+        }
+        this.bottom.write(mediator);
+      }
+
       var me = this;
-      me.memory.set(mediator._id, mediator);
-      if (this.bottom) { this.bottom.write(mediator) }
       mediator.on("changed", function(mediator, oldData) {
         me.memory.set(mediator._id, mediator);
       });
+
       this.emit('add', mediator);
   }
 
@@ -193,6 +183,32 @@ export class Bucket extends EventEmitter {
     if (this.bottom) { this.bottom.delete(_id) }
     this.emit('remove', _id);
   }
+
+  _modelFromModelName(modelName) {
+      let model = this.models[modelName]
+      if (!model) {
+        throw "No model class found for modelName: " + modelName;
+      }
+      return model
+  }
+
+  _modelFromId(_id) {
+      return this._modelFromModelName(
+        modelNameFromId(_id)
+      );
+  }
+}
+
+
+/**
+ * Resolves the modelName from in _id (persistence id).
+ */
+function modelNameFromId(_id) {
+    let modelName = _id.split(':')[0];
+    if (!modelName) {
+        throw "No known modelName found in _id: " + _id;
+    }
+    return modelName
 }
 
 
