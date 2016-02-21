@@ -27,8 +27,12 @@ export class Bucket extends EventEmitter {
    * Create a new Bucket, that can store different subclasses
    * of Mediator.
    */
-  constructor(bottom) {
+  constructor(namespace='default', models={}, bottom) {
       super();
+      /**
+       *
+       */
+      this.namespace = namespace || generate();
       /**
        * @type {Map} The inmemory store for the bucket.
        */
@@ -36,7 +40,7 @@ export class Bucket extends EventEmitter {
       /**
        * @type {Object} An object with keys for models and classes as value.
        */
-      this.models = {};
+      this.models = models;
       /**
        * @type {Object} An Map with mediator._id => [list of junction _ids]
        */
@@ -44,7 +48,7 @@ export class Bucket extends EventEmitter {
       /**
        * @type {Object} A Bottom used for persisting objects somewhere.
        */
-      this.bottom = bottom;
+      this.bottom = (bottom === undefined) ? bottom : new bottom(namespace);
       /**
        * @type {Map}
        */

@@ -17,6 +17,7 @@ describe('RedisBottom', function() {
   beforeEach(function() {
     client = createClient({prefix:"mocha:"})
     redis_bottom = new RedisBottom(client);
+    redis_bottom.client = client;
     buck = new Mediator({
       model: 'chicken',
       id: 'buck'

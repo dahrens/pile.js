@@ -1,7 +1,9 @@
 "use strict";
 
+import { createClient } from 'redis';
 import { Mediator } from 'src/mediator';
 import { flatten } from 'src/bucket';
+
 
 /**
  * Appends a 's' to the given string.
@@ -16,10 +18,10 @@ export class RedisBottom {
   /**
    * Constructs a new RedisBottom.
    *
-   * @param {redisClient} client The underlying redis client that will be used.
+   * @param {namespace} string The namespace used as prefix for redis.
    */
-  constructor(client) {
-    this.client = client
+  constructor(namespace="unknown") {
+    this.client = createClient({prefix: namespace + ":"})
   }
 
   /**

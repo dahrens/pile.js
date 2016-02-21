@@ -13,9 +13,15 @@ describe('Bucket', function() {
       brain
 
   beforeEach(function() {
-    bucket = new Bucket();
+    bucket = new Bucket('mocha');
     brain = new Brain();
     fooman = new Human("fooman", brain);
+  });
+
+  it('should create a bucket with correct namespace', function() {
+    let bottom = spy()
+    let bocket = new Bucket('awesome', {}, bottom);
+    assert(bottom.withArgs('awesome').called);
   });
 
   it('should handle object changes behind the scene', function(done) {
@@ -48,7 +54,7 @@ describe('Bucket', function() {
   describe('#subscribe', function () {
     var mirror;
     beforeEach(function() {
-      mirror = new Bucket();
+      mirror = new Bucket('mirror');
     });
     it('should allow buckets the subscription.', function() {
       bucket.subscribe(mirror);
@@ -177,7 +183,8 @@ describe('Bucket with Bottom set.', function() {
       write: spy(),
       delete: spy()
     }
-    bucket = new Bucket(bottom);
+    bucket = new Bucket();
+    bucket.bottom = bottom;
     brain = new Brain();
     pinky = new Brain();
   });
