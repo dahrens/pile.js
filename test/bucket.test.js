@@ -253,7 +253,7 @@ describe('Bucket with Bottom set.', function() {
     });
 
 
-    it("sync calls a method and passes a completely restored memory.", function(done) {
+    it("should call a method and passes a completely restored memory.", function(done) {
       empty_bucket.sync(function(bucket) {
         assert(bucket, "we got nothing from the bucket");
         assert(bucket.memory instanceof Map, "not a Map");

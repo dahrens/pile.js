@@ -11,7 +11,7 @@ Those buckets may contain objects that inherit from Mediators.
 
 ```javascript
 
-import {Mediator, Bucket, RedisBottom} from 'pilejs';
+import {Mediator, Bucket, RedisBottom} from 'pile.js';
 
 // define a class with reference to another class.
 class Human extends Mediator {
@@ -33,19 +33,29 @@ class Brain extends Mediator {
 
 // create an object
 let foo = new Human("foo", new Brain());
-
-// create a bucket and add something
-let bucket = new Bucket({
+let models = {
   'brain': Brain,
   'human': Human
-}, RedisBottom)
+}
+
+// in memory *only* bucket without persistence.
+let mirror = new Bucket("mirror", models)
+
+// create a persistent bucket
+let bucket = new Bucket("humans", models, RedisBottom)
+
+// subscribe with the mirror
+bucket.subscribe(mirror);
+
+// add some data
 bucket.add(foo);
 
+// the mirror contains our foo.
+assert.equal(mirror.get(foo._id), foo);
+
 // recreate
-new Bucket({
-  'brain': Brain,
-  'human': Human
-}).sync(function(recreated) {
+new Bucket("humans", models, RedisBottom).sync(function(recreated) {
+  // recreated bottoms with the same name contain everything from storage.
   assert.equal(recreated.get(foo._id), foo);
 })
 
