@@ -3,8 +3,8 @@
 import { createClient } from 'redis';
 import EventEmitter from 'events';
 
-import { Mediator } from 'src/mediator';
-import { flatten } from 'src/bucket';
+import { Mediator } from './mediator';
+import { flatten } from './bucket';
 
 
 

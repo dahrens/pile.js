@@ -37,29 +37,20 @@ export class Mediator extends EventEmitter {
       }
     }
 
-    var _id = this._data['model'] + ':' + this._data['id']
-    Object.defineProperty(this, '_id', { writable: false, value: _id });
-
     Object.defineProperty(this, 'refs', {
       get: function() { return this._refs.values(); }
     })
 
     for(let prop in this._data) {
-      if (prop == 'id' || prop == 'model') {
-        Object.defineProperty(this, prop,
-          {
-            writable: false,
-            value: this._data[prop]
-          });
-      } else {
-        Object.defineProperty(this, prop,
-          {
-            get: function() { return this._get(prop); },
-            set: function(value) { this._set(prop, value); }
-          });
-      }
+      Object.defineProperty(this, prop,
+        {
+          get: function() { return this._get(prop); },
+          set: function(value) { this._set(prop, value); }
+        });
     }
   }
+
+  get _id() { return this._data['model'] + ':' + this._data['id'] }
 
   /**
    * Getter method that is aware references.

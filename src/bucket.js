@@ -2,8 +2,8 @@
 
 import EventEmitter from 'events';
 import { generate } from 'shortid';
-import { Mediator } from 'src/mediator';
-import { Bottom } from 'src/bottom';
+import { Mediator } from './mediator';
+import { Bottom } from './bottom';
 
 
 /**
@@ -31,6 +31,7 @@ export class Bucket extends EventEmitter {
        * @type {Object} An object with keys for models and classes as value.
        */
       this.models = models;
+      this.models['junction'] = Junction;
       /**
        * @type {Object} An Map with mediator._id => [list of junction _ids]
        */
@@ -64,9 +65,9 @@ export class Bucket extends EventEmitter {
 
       for (let junction of junctions) {
         let from = me.memory.get(junction.from);
-        for (let prop in from) {
+        for (let prop in from._data) {
           if (from[prop] === junction.to) {
-            from._refs.set(junction.to, me.mememory.get(junction.to));
+            from._refs.set(junction.to, me.memory.get(junction.to));
             me.memory.set(junction._id, junction);
           }
         }
@@ -91,7 +92,9 @@ export class Bucket extends EventEmitter {
         throw "No known modelName found in _id: " + _id;
     }
     let model = new this.models[modelName];
-    model._data = raw_data;
+    for (let prop in raw_data) {
+      model._data[prop] = raw_data[prop];
+    }
     return model;
   }
 

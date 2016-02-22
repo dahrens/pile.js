@@ -3,9 +3,9 @@
 import { assert } from 'chai';
 import { spy, stub } from 'sinon';
 
-import { Bucket, Junction } from 'src/bucket';
-import { Bottom } from 'src/bottom';
-import { Human, Brain } from 'test/lib/config';
+import { Bucket, Junction } from '../src/bucket';
+import { Bottom } from '../src/bottom';
+import { Human, Brain } from './lib/config';
 
 
 describe('Bucket', function() {
@@ -238,29 +238,43 @@ describe('Bucket with Bottom set.', function() {
         get namespace() { return 'mocha' }
         read(cb) {
           let content = new Map();
-          content.set(pinky._id, pinky);
-          content.set(brain._id, brain);
-          content.set(pinkbrain._id, pinkbrain);
+          content.set(pinky._id, pinky._data);
+          content.set(brain._id, brain._data);
+          content.set(pinkbrain._id, pinkbrain._data);
           cb(content);
         }
       }
       new_bottom = new FakedBottom()
       empty_bucket = new Bucket('mocha', {
         'brain': Brain,
-        'human': Human,
-        'junction': Junction
+        'human': Human
       }, new_bottom);
     });
 
 
-    it("should call a method and passes a completely restored memory.", function(done) {
+    it("should call a method and passes itself completely restored.", function(done) {
       empty_bucket.sync(function(bucket) {
+        let restored_pinky = bucket.get(pinky._id);
+        let restored_brain = bucket.get(brain._id);
         assert(bucket, "we got nothing from the bucket");
         assert(bucket.memory instanceof Map, "not a Map");
-        assert(bucket.memory.get(pinky._id), "No pinky");
-        assert(bucket.memory.get(brain._id), "No brain");
+        assert(restored_pinky, "No pinky");
+        assert.equal(restored_pinky._id, pinky._id, "Pinky has a new _id?");
+        assert.equal(restored_pinky.id, pinky.id, "Pinky has new id?");
+        assert.deepEqual(restored_pinky._data, pinky._data, "This is not our Pinky :(");
+        assert.equal(restored_pinky.think(), "ARGH!", "Brain can't think");
+        assert(restored_brain, "No brain");
         assert(bucket.memory.get(pinkbrain._id), "No pinkbrain");
-        assert(bucket.memory.get(brain._id).brain.think() === "ARGH!", "Brain can't think");
+        assert(restored_brain.brain.think() === "ARGH!", "Brain can't think");
+        done();
+      });
+    });
+    it("should listen on changes for restored data!", function(done) {
+      empty_bucket.sync(function(bucket) {
+        let restored_brain = bucket.get(brain._id);
+        assert.equal(restored_brain._id, brain._id, "Pinky has a new _id?");
+        restored_brain.name = "changed!";
+        assert(bucket.get(brain._id).name === restored_brain.name, "changes do not affect the bucket");
         done();
       });
     });
