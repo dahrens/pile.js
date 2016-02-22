@@ -4,6 +4,7 @@ import { assert } from 'chai';
 import { spy, stub } from 'sinon';
 
 import { Bucket, Junction } from 'src/bucket';
+import { Bottom } from 'src/bottom';
 import { Human, Brain } from 'test/lib/config';
 
 
@@ -11,27 +12,25 @@ describe('Bucket', function() {
   let bucket,
       fooman,
       brain
-
   beforeEach(function() {
     bucket = new Bucket('mocha');
     brain = new Brain();
     fooman = new Human("fooman", brain);
   });
 
-  it('should create a bucket with correct namespace', function() {
-    let bottom = spy()
-    let bocket = new Bucket('awesome', {}, bottom);
-    assert(bottom.withArgs('awesome').called);
-  });
 
-  it('should handle object changes behind the scene', function(done) {
+  it('should create a bucket with correct namespace', function() {
+    let bottom = stub()
+    let bocket = new Bucket('awesome', {}, bottom);
+    assert(bottom.withArgs('awesome').called, "no bottom created?");
+  });
+  it('should handle object changes behind the scene', function() {
     bucket.add(fooman);
     fooman.name = "renamed";
-    bucket.get(fooman._id, function(err, reply) {
-      assert.equal(reply.name, fooman.name, "bucket still knows the old value");
-      done();
-    });
+    let reply = bucket.get(fooman._id);
+    assert.equal(reply.name, fooman.name, "bucket still knows the old value");
   });
+
 
   describe('#register', function() {
     it('should add the mediator constructor to its known models', function() {
@@ -51,6 +50,7 @@ describe('Bucket', function() {
     });
   });
 
+
   describe('#subscribe', function () {
     var mirror;
     beforeEach(function() {
@@ -62,9 +62,11 @@ describe('Bucket', function() {
       assert.equal(mirror.memory.get(brain._id), bucket.memory.get(brain._id));
       bucket.add(fooman);
       assert.equal(mirror.memory.get(fooman._id), bucket.memory.get(fooman._id));
-      assert.equal(mirror.memory.get('junction:' + fooman._id + ':' + brain._id), bucket.memory.get('junction:' + fooman._id + ':' + brain._id));
+      let juncId = 'junction:' + fooman._id + ':' + brain._id
+      assert.equal(mirror.memory.get(juncId), bucket.memory.get(juncId));
     });
   });
+
 
   describe('#add', function () {
     beforeEach(function() {
@@ -88,12 +90,14 @@ describe('Bucket', function() {
     });
     it('should add referred mediators and juntions.', function() {
       bucket.add(fooman);
-      assert.equal(bucket.memory.size, 3, "something is missing in the bucket.");
+      assert.equal(bucket.memory.size, 3, "something is missing in da bucket.");
       assert(bucket.memory.get(fooman._id), "No fooman in bucket.");
       assert(bucket.memory.get(brain._id), "No brain in the bucket!");
-      assert(bucket.memory.get('junction:' + fooman._id + ':' + brain._id), "No juntion between fooman and his brain in the bucket!");
+      assert(bucket.memory.get('junction:' + fooman._id + ':' + brain._id),
+        "No juntion between fooman and his brain in the bucket!");
     });
   });
+
 
   describe('#remove', function () {
     beforeEach(function() {
@@ -127,24 +131,21 @@ describe('Bucket', function() {
     });
   });
 
+
   describe("#get", function() {
     beforeEach(function() {
       bucket.register(Human);
     });
-    it("should answer with error on unknown id requests", function(done) {
+    it("should answer with undefined on unknown id requests", function() {
       var _id = 'default:notvalid'
-      bucket.get(_id, function(err, obj) {
-        assert.equal(err, "Can not find id " + _id);
-        done()
-      })
+      assert(bucket.get(_id) === undefined);
     });
     it("should resolve objects properly by id", function() {
       bucket.add(fooman);
-      bucket.get(fooman._id, function(err, obj) {
-        assert.equal(fooman instanceof Human, obj instanceof Human);
-        assert.equal(fooman.toJSON(), obj.toJSON());
-        assert.equal(fooman, obj);
-      })
+      let obj = bucket.get(fooman._id);
+      assert.equal(fooman instanceof Human, obj instanceof Human);
+      assert.equal(fooman.toJSON(), obj.toJSON());
+      assert.equal(fooman, obj);
     });
   })
 });
@@ -181,7 +182,8 @@ describe('Bucket with Bottom set.', function() {
   beforeEach(function() {
     bottom = {
       write: spy(),
-      delete: spy()
+      delete: spy(),
+      read: spy()
     }
     bucket = new Bucket('mocha', {
       'brain': Brain
@@ -190,6 +192,8 @@ describe('Bucket with Bottom set.', function() {
     brain = new Brain();
     pinky = new Brain();
   });
+
+
   describe('#add', function() {
     it('should call write for one added mediator', function() {
       bucket.add(brain);
@@ -206,6 +210,8 @@ describe('Bucket with Bottom set.', function() {
       assert(console.warn.called, "There was no warning.");
     });
   });
+
+
   describe('#remove', function() {
     beforeEach(function() {
       bucket.add([pinky, brain]);
@@ -220,8 +226,43 @@ describe('Bucket with Bottom set.', function() {
       assert(bottom.delete.withArgs(brain._id).calledOnce, "has not called bottom.delete with brain._id");
     });
   });
+
+
   describe('#sync', function() {
-    bucket = new Bucket();
-    bucket.bottom = bottom;
+    var empty_bucket, new_bottom, pinky, brain, pinkbrain;
+    beforeEach(function() {
+      pinky = new Brain();
+      brain = new Human("pinkbrain", pinky);
+      pinkbrain = new Junction(brain, pinky);
+      class FakedBottom extends Bottom {
+        get namespace() { return 'mocha' }
+        read(cb) {
+          let content = new Map();
+          content.set(pinky._id, pinky);
+          content.set(brain._id, brain);
+          content.set(pinkbrain._id, pinkbrain);
+          cb(content);
+        }
+      }
+      new_bottom = new FakedBottom()
+      empty_bucket = new Bucket('mocha', {
+        'brain': Brain,
+        'human': Human,
+        'junction': Junction
+      }, new_bottom);
+    });
+
+
+    it("sync calls a method and passes a completely restored memory.", function(done) {
+      empty_bucket.sync(function(bucket) {
+        assert(bucket, "we got nothing from the bucket");
+        assert(bucket.memory instanceof Map, "not a Map");
+        assert(bucket.memory.get(pinky._id), "No pinky");
+        assert(bucket.memory.get(brain._id), "No brain");
+        assert(bucket.memory.get(pinkbrain._id), "No pinkbrain");
+        assert(bucket.memory.get(brain._id).brain.think() === "ARGH!", "Brain can't think");
+        done();
+      });
+    });
   });
 });

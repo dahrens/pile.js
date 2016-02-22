@@ -4,7 +4,7 @@ import { assert } from 'chai';
 import { createClient } from 'redis';
 
 import { RedisBottom } from 'src/bottom';
-import { Mediator } from 'src/mediator'
+import { Mediator } from 'src/mediator';
 import { Human, Brain } from 'test/lib/config';
 
 
@@ -92,9 +92,22 @@ describe('RedisBottom', function() {
     });
   });
   describe('#read', function() {
+    let brain,
+        human,
+        junction
     beforeEach(function() {
-      bottom.write(buck);
+      // lets fake redis content of a human with a referred brain.
+      brain = new Brain();
+      human = new Human();
+      redis_bottom.write([human, brain]);
     });
     afterEach(redis_cleanup);
+    it('returns a map with all models and junctions', function(done) {
+      redis_bottom.read(function(models) {
+        assert(models.get(brain._id));
+        assert(models.get(human._id));
+        done();
+      });
+    });
   });
 });

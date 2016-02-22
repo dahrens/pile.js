@@ -3,6 +3,7 @@
 import EventEmitter from 'events';
 import { generate } from 'shortid';
 import { Mediator } from 'src/mediator';
+import { Bottom } from 'src/bottom';
 
 
 /**
@@ -35,21 +36,63 @@ export class Bucket extends EventEmitter {
        */
       this.junctions = new Map();
       /**
-       * @type {Object} A Bottom used for persisting objects somewhere.
-       */
-      this.bottom = (bottom === undefined) ? bottom : new bottom(namespace);
-      /**
        * @type {Map}
        */
       this.subscribers = new Map();
+      /**
+       * @type {Object} A Bottom used for persisting objects somewhere.
+       */
+      this.bottom = (bottom === undefined) ? bottom : this._getBottom(bottom);
   }
 
   /**
    * Synchronizes the Bucket with its Bottom. This is called after creation
-   * of a Bucket, that has a
+   * of a Bucket, that has a valid bottom.
+   *
+   * @param {function} done The callback that gets an copy of the bottoms memory
    */
-  sync() {
+  sync(done) {
+    let me = this;
+    this.bottom.read(function(content) {
+      let junctions = [];
 
+      for (let [id, data] of content.entries()) {
+        let obj = me._restore(id, data)
+        if (id.startsWith('junction:')) { junctions.push(obj); }
+        me.memory.set(id, obj);
+      }
+
+      for (let junction of junctions) {
+        let from = me.memory.get(junction.from);
+        for (let prop in from) {
+          if (from[prop] === junction.to) {
+            from._refs.set(junction.to, me.mememory.get(junction.to));
+            me.memory.set(junction._id, junction);
+          }
+        }
+      }
+      done(me)
+    });
+  }
+
+  /**
+   * Resolve the bottom based on incoming data.
+   * When it is an instance of Bottom it uses it
+   * otherwise it assumes a Class an creates an fresh instance.
+   */
+  _getBottom(bottom) {
+    if (bottom instanceof Bottom) { return bottom; }
+    return new bottom(this.namespace);
+  }
+
+  _restore(_id, raw_data) {
+    let modelName = _id.split(':')[0];
+    if (!modelName) {
+        throw "No known modelName found in _id: " + _id;
+    }
+    let model = new this.models[modelName];
+    model._data = raw_data;
+    return model;
   }
 
   /**
@@ -95,20 +138,11 @@ export class Bucket extends EventEmitter {
    * Error are handled in the callback method, that *must* be
    * provided if you want to receive a result.
    */
-  get(_id, callback) {
+  get(_id) {
       if (typeof _id !== "string") {
         throw "Must be a string"
       }
-      let me = this;
-      if (this.memory.has(_id)) {
-        callback.call(me, null, this.memory.get(_id));
-      } else {
-        if (this.bottom) {
-          // TODO: what about loading from bottom?
-        } else {
-          callback.call(me, "Can not find id " + _id)
-        }
-      }
+      return this.memory.get(_id);
   }
 
   /**
@@ -181,7 +215,7 @@ export class Bucket extends EventEmitter {
   }
 
   /**
-   * Removes one mediator by its _id from the bucket.
+   * Removes one mediator from the bucket by its _id.
    *
    * @emits 'remove'
    */
@@ -190,44 +224,6 @@ export class Bucket extends EventEmitter {
     if (this.bottom) { this.bottom.delete(_id) }
     this.emit('remove', _id);
   }
-
-  /**
-   * Resolve a model class by name.#
-   *
-   * @param {string} modelName The name of the model.
-   */
-  _modelFromModelName(modelName) {
-      let model = this.models[modelName]
-      if (!model) {
-        throw "No model class found for modelName: " + modelName;
-      }
-      return model
-  }
-
-  /**
-   * Resolve a model class by id.
-   *
-   * @param {string} _id The id to search for.
-   */
-  _modelFromId(_id) {
-      return this._modelFromModelName(
-        modelNameFromId(_id)
-      );
-  }
-}
-
-
-/**
- * Resolves the modelName from in _id (persistence id).
- *
- * @param {string} _id The id to search for a modelName in.
- */
-function modelNameFromId(_id) {
-    let modelName = _id.split(':')[0];
-    if (!modelName) {
-        throw "No known modelName found in _id: " + _id;
-    }
-    return modelName
 }
 
 
