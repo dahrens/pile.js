@@ -7,12 +7,11 @@ import { Mediator } from 'src/mediator';
 import { flatten } from 'src/bucket';
 
 
+
+
 /**
- * Appends a 's' to the given string.
+ * Base class for Bottoms. We need this atm to test for Bottom class or instance
  */
-function pluralize(s) { return 'modelset:' + s + 's'; }
-
-
 export class Bottom extends EventEmitter { }
 
 
@@ -60,7 +59,9 @@ export class RedisBottom extends Bottom {
   }
 
   /**
-   * Read everything that is known by this bottom.
+   * Read everything that is known by this bottom and tell when done().
+   *
+   * @param {Function} done Gets called with all the models.
    */
   read(done) {
     var me = this;
@@ -78,14 +79,6 @@ export class RedisBottom extends Bottom {
         done(models);
       });
     });
-  }
-
-  readModelSet(setName) {
-    let me = this;
-    this.client.smembers(setName, function(err, reply) {
-      if (err) { throw err }
-      me.emit('models', reply)
-    })
   }
 
   /**
