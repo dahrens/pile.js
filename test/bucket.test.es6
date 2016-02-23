@@ -131,6 +131,24 @@ describe('Bucket', function() {
     });
   });
 
+  describe("#restore", function() {
+    let restored,
+        data;
+    beforeEach(function() {
+      bucket.register(Brain);
+      data = {id: 'id', model:'brain'};
+      restored = bucket.restore('brain:id', data);
+    });
+    it("should construct a fresh model based on my data!", function() {
+       assert(restored instanceof Brain, "it has the wrong class");
+       assert.deepEqual(restored._data, data, "data is not equal");
+    });
+    it("should fail on unknown models", function() {
+      assert.throws(function() {
+        bucket.restore('unknown:id', {});
+      });
+    });
+  });
 
   describe("#get", function() {
     beforeEach(function() {

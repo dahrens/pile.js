@@ -51,11 +51,8 @@ export class RedisBottom extends Bottom {
   /**
    * Writes the given mediators into redis backend.
    */
-  write(mediators) {
-    mediators = Array.isArray(mediators) ? mediators : [mediators]
-    for (let mediator of mediators) {
-      this.client.hmset(this.ground(mediator));
-    }
+  write(mediator, done) {
+    this.client.hmset(this.ground(mediator), done);
   }
 
   /**
@@ -84,8 +81,8 @@ export class RedisBottom extends Bottom {
   /**
    * Deletes data from the redis backend.
    */
-  delete() {
-
+  delete(id, done) {
+    this.client.del(id, done);
   }
 }
 

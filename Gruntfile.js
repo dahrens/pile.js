@@ -8,11 +8,11 @@ module.exports = function(grunt) {
         tasks: [/*'browserify',*/'babel']
       },
       docs: {
-        files: ['test/**/*.js', 'src/**/*.es6'],
+        files: ['test/**/*.es6', 'src/**/*.es6'],
         tasks: ['esdoc']
       },
       test: {
-        files: ['test/**/*.js', 'src/**/*.es6'],
+        files: ['test/**/*.es6', 'src/**/*.es6'],
         tasks: ['shell']
       }
     },

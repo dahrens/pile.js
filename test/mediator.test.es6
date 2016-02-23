@@ -11,7 +11,7 @@ import { Human, Brain } from 'test/lib/config';
 describe('Mediator', function() {
   var data, m1, m2, fooman, brain;
   beforeEach(function() {
-    data = {prop: 'value'};
+    data = {id: 'testid', model: 'testmodel', prop: 'value'};
     m1 = new Mediator(data);
     m2 = new Mediator(data);
     fooman = new Human("fooman");
@@ -21,6 +21,9 @@ describe('Mediator', function() {
     assert.equal(m1.prop, data.prop);
     assert.equal(fooman.name, "fooman");
     assert.equal(fooman.brain, null);
+  });
+  it('should only contains data that came in plus model and id', function () {
+    assert.deepEqual(m1._data, data);
   });
   it('should have setters for the underlying data object', function () {
     m1.prop = 'changed';
@@ -54,8 +57,8 @@ describe('Mediator', function() {
     assert(m2._id);
     assert(fooman._id);
     assert(brain._id);
-    assert.equal(m1._id, 'default:' + m1.id);
-    assert.equal(m2._id, 'default:' + m2.id);
+    assert.equal(m1._id, 'testmodel:' + m1.id);
+    assert.equal(m2._id, 'testmodel:' + m2.id);
     assert.equal(fooman._id, 'human:' + fooman.id);
     assert.equal(brain._id, 'brain:' + brain.id);
     let m3 = new Mediator({id:'cheated'});

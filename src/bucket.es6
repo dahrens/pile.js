@@ -43,7 +43,10 @@ export class Bucket extends EventEmitter {
       /**
        * @type {Object} A Bottom used for persisting objects somewhere.
        */
-      this.bottom = (bottom === undefined) ? bottom : this._getBottom(bottom);
+      this.bottom = bottom;
+      if (bottom !== undefined && !(bottom instanceof Bottom)) {
+        this.bottom = new bottom(this.namespace);
+      }
   }
 
   /**
@@ -58,7 +61,7 @@ export class Bucket extends EventEmitter {
       let junctions = [];
 
       for (let [id, data] of content.entries()) {
-        let obj = me._restore(id, data)
+        let obj = me.restore(id, data)
         if (id.startsWith('junction:')) {
           junctions.push(obj);
         }
@@ -79,18 +82,13 @@ export class Bucket extends EventEmitter {
   }
 
   /**
-   * Resolve the bottom based on incoming data.
-   * When it is an instance of Bottom it uses it
-   * otherwise it assumes a Class an creates an fresh instance.
+   * Restores an object that was persistet back, by setting _data object
+   * insode of a fresh instance.
+   *
+   * @param {string} _id The id of the object.
+   * @param {Object} raw_data The plain data that comes from a bottom.
    */
-  _getBottom(bottom) {
-    if (bottom instanceof Bottom) {
-      return bottom;
-    }
-    return new bottom(this.namespace);
-  }
-
-  _restore(_id, raw_data) {
+  restore(_id, raw_data) {
     let modelName = _id.split(':')[0];
     if (!modelName) {
         throw "No known modelName found in _id: " + _id;

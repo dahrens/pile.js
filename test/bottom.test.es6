@@ -2,6 +2,7 @@
 import { assert } from 'chai';
 
 import { createClient } from 'redis';
+import * as async from 'async';
 
 import { RedisBottom } from 'src/bottom';
 import { Mediator } from 'src/mediator';
@@ -19,7 +20,6 @@ describe('RedisBottom', function() {
   var test;
   var redis_cleanup = function(done) {
     test.keys('mocha*', function(err, rows) {
-      let async = require("async");
       async.each(rows, function(row, cb) {
         test.del(row, cb)
       }, done);
@@ -34,7 +34,7 @@ describe('RedisBottom', function() {
   });
   after(redis_cleanup);
 
-  var redis_bottom,
+  let redis_bottom,
       client,
       buck,
       fooman,
@@ -74,40 +74,48 @@ describe('RedisBottom', function() {
         done();
       });
     });
-    it('should persist lists of mediators in redis hashmap.', function(done) {
-      redis_bottom.write([buck, fooman]);
-      client.hgetall(buck._id, function(err, reply) {
-        assert(!err);
-        assert.equal(JSON.stringify(reply), buck.toJSON());
-        done();
-      });
-    });
-    it('should persist lists of mediators in redis hashmap.', function(done) {
-      redis_bottom.write([buck, fooman]);
-      client.hgetall(fooman._id, function(err, reply) {
-        assert(!err);
-        assert.equal(JSON.stringify(reply), fooman.toJSON());
-        done();
+    it('should persist more than one mediator', function(done) {
+      async.each([fooman, brain], function(obj, cb) {
+        redis_bottom.write(obj, cb);
+      }, function() {
+          async.each([fooman, brain], function(obj, clbac) {
+            client.hgetall(obj._id, function(err, reply) {
+              assert(!err, "an error occured");
+              assert(reply, "no reply");
+              assert.equal(reply.id, obj.id, "wrong id!");
+              assert.equal(reply.model, obj.model, "wrong model!");
+              clbac();
+            });
+        }, done)
       });
     });
   });
   describe('#read', function() {
-    let brain,
-        human,
-        junction
-    beforeEach(function() {
+    beforeEach(function(done) {
       // lets fake redis content of a human with a referred brain.
-      brain = new Brain();
-      human = new Human();
-      redis_bottom.write([human, brain]);
+      redis_bottom.write(fooman);
+      redis_bottom.write(brain);
+      client.exists(brain._id, done);
     });
     afterEach(redis_cleanup);
     it('returns a map with all models and junctions', function(done) {
       redis_bottom.read(function(models) {
         assert(models.get(brain._id));
-        assert(models.get(human._id));
+        assert(models.get(fooman._id));
         done();
       });
+    });
+  });
+  describe('#delete', function() {
+    beforeEach(function(done) {
+      redis_bottom.write(brain, function(err, reply) { done() });
+    });
+    it('deletes the hashmap for the given id', function(done) {
+      redis_bottom.delete(brain._id);
+      client.exists(brain._id, function(err, reply) {
+        assert(reply === 0, "hashmap still exists.");
+        done()
+      })
     });
   });
 });
