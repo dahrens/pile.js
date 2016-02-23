@@ -20,7 +20,7 @@ export class Bucket extends EventEmitter {
   constructor(namespace='default', models={}, bottom) {
       super();
       /**
-       *
+       * @type {string} The namespace of the bucket. Used to prefix IDs.
        */
       this.namespace = namespace || generate();
       /**
