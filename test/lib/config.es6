@@ -14,10 +14,16 @@ export class Human extends Mediator {
     });
   }
 
-  say(sentence) { return format('Human %s says: "%s"', this.name, sentence); }
+  say(sentence) {
+    return format('Human %s says: "%s"', this.name, sentence);
+  }
 }
 
 export class Brain extends Mediator {
-  constructor() { super({ model: 'brain' }) }
-  think() { return format('ARGH!') }
+  constructor() {
+    super({ model: 'brain' })
+  }
+  think() {
+    return format('ARGH!')
+  }
 }

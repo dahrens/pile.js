@@ -3,9 +3,9 @@ import { assert } from 'chai';
 
 import { createClient } from 'redis';
 
-import { RedisBottom } from '../src/bottom';
-import { Mediator } from '../src/mediator';
-import { Human, Brain } from './lib/config';
+import { RedisBottom } from 'src/bottom';
+import { Mediator } from 'src/mediator';
+import { Human, Brain } from 'test/lib/config';
 
 
 describe('RedisBottom', function() {

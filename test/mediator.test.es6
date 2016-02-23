@@ -2,8 +2,8 @@
 
 import { assert } from 'chai';
 
-import { Mediator } from '../src/mediator';
-import { Human, Brain } from './lib/config';
+import { Mediator } from 'src/mediator';
+import { Human, Brain } from 'test/lib/config';
 
 
 

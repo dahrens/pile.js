@@ -3,9 +3,9 @@
 import { assert } from 'chai';
 import { spy, stub } from 'sinon';
 
-import { Bucket, Junction } from '../src/bucket';
-import { Bottom } from '../src/bottom';
-import { Human, Brain } from './lib/config';
+import { Bucket, Junction } from 'src/bucket';
+import { Bottom } from 'src/bottom';
+import { Human, Brain } from 'test/lib/config';
 
 
 describe('Bucket', function() {

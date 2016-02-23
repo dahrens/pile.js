@@ -4,16 +4,16 @@ module.exports = function(grunt) {
   grunt.initConfig({
     watch: {
       scripts: {
-        files: ['src/**/*.js'],
-        tasks: [/*'browserify',*/'babel'],
+        files: ['src/**/*.es6'],
+        tasks: [/*'browserify',*/'babel']
       },
       docs: {
-        files: ['test/**/*.js', 'src/**/*.js'],
+        files: ['test/**/*.js', 'src/**/*.es6'],
         tasks: ['esdoc']
       },
       test: {
-        files: ['test/**/*.js', 'src/**/*.js'],
-        tasks: ['mochaTest']
+        files: ['test/**/*.js', 'src/**/*.es6'],
+        tasks: ['shell']
       }
     },
     /*browserify: {
@@ -32,15 +32,15 @@ module.exports = function(grunt) {
     },*/
     babel: {
       options: {
-        "sourceMap": true,
+        sourceMap: true,
         presets: ["es2015"]
       },
       dist: {
         files: [{
           expand: true,
           cwd: "src/",
-          src: ["**/*.js"],
-          dest: "dist/",
+          src: ["**/*.es6"],
+          dest: "lib/",
           ext: ".js"
         }]
       }
@@ -53,18 +53,18 @@ module.exports = function(grunt) {
         }
       }
     },
-    mochaTest: {
-      test: {
-        options: {
-          reporter: 'list',
-          require: ['babel-register', 'test/lib/bootstrap.js']
-        },
-        src: ['test/**/*.test.js'],
+    shell: {
+      options: {
+        stderr: false
+      },
+      target: {
+        command: "./node_modules/.bin/babel-node ./node_modules/istanbul/lib/cli.js cover ./node_modules/.bin/_mocha -- 'test/**/*.es6' --require test/lib/bootstrap"
       }
     }
   });
 
-  grunt.registerTask('test', ['mochaTest']);
+  grunt.registerTask('test', ['shell']);
+  grunt.registerTask('build', ['babel']);
   grunt.registerTask('doc', ['esdoc']);
-  grunt.registerTask('develop', ['watch'])
+  grunt.registerTask('dev', ['watch']);
 };

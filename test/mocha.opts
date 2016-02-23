@@ -1,2 +1,2 @@
---require babel-register test/lib/bootstrap
+--require babel-register test/lib/bootstrap.es6
 --reporter list

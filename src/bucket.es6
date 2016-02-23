@@ -59,7 +59,9 @@ export class Bucket extends EventEmitter {
 
       for (let [id, data] of content.entries()) {
         let obj = me._restore(id, data)
-        if (id.startsWith('junction:')) { junctions.push(obj); }
+        if (id.startsWith('junction:')) {
+          junctions.push(obj);
+        }
         me.memory.set(id, obj);
       }
 
@@ -82,7 +84,9 @@ export class Bucket extends EventEmitter {
    * otherwise it assumes a Class an creates an fresh instance.
    */
   _getBottom(bottom) {
-    if (bottom instanceof Bottom) { return bottom; }
+    if (bottom instanceof Bottom) {
+      return bottom;
+    }
     return new bottom(this.namespace);
   }
 
