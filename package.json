@@ -3,6 +3,26 @@
   "version": "0.0.1",
   "description": "Distributed buckets with mediators!",
   "main": "lib/index.js",
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "rules": {
+        "indent": [2, 2],
+        "quotes": [2, "single"],
+        "linebreak-style": [2, "unix"],
+        "semi": [2, "always"],
+        "no-underscore-dangle": 0,
+        "no-use-before-define": [2, "nofunc"],
+        "spaced-comment": [2, "always"],
+        "space-before-blocks": [2, "always"],
+        "semi-spacing": [2, {"before": false, "after": true}],
+        "object-shorthand": [2, "always"]
+    },
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+    }
+  },
   "dependencies": {
     "async": "^1.5.2",
     "redis": "^2.4.2",
@@ -20,6 +40,7 @@
     "browserify": "^13.0.0",
     "chai": "^3.5.0",
     "esdoc": "^0.4.3",
+    "eslint": "^2.2.0",
     "grunt": "^0.4.5",
     "grunt-babel": "^6.0.0",
     "grunt-browserify": "^4.0.1",

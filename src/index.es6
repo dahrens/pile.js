@@ -1,4 +1,4 @@
-import 'source-map-support/register'
+import 'source-map-support/register';
 
 export * from './bottom';
 export * from './bucket';

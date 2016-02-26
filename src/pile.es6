@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import EventEmitter from 'events';
 import { generate } from 'shortid';
@@ -20,14 +20,14 @@ export class Pile extends EventEmitter {
   constructor(nsp, server) {
     super();
     this.nsp = server.of(nsp);
-    let buckets = new Map()
+    let buckets = new Map();
 
-    this.nsp.on('connection', function(socket) {
+    this.nsp.on('connection', function (socket) {
       buckets.set(socket.id, socket);
-      socket.on('disconnect', function() {
+      socket.on('disconnect', function () {
         buckets.delete(socket.id);
       });
-      socket.emit('hi', {nsp: nsp, buckets: buckets.keys()});
+      socket.emit('hi', {nsp, buckets: buckets.keys()});
     });
     this.buckets = buckets;
   }

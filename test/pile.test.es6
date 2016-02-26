@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import { should } from 'chai';
 should();
@@ -26,10 +26,10 @@ describe('Pile', function() {
     // nsp.emit('hi', 'everyone!');
   });
   describe('#connect', function() {
-    it("should allow you to connect to the nsp", function() {
-      server.on('connection', function(socket){
-        socket.on('disconnect', function(){ });
+    it('should allow you to connect to the nsp', function() {
+      server.on('connection', function(socket) {
+        socket.on('disconnect', function() { });
       });
-    })
+    });
   });
 });

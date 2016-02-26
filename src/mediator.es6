@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import EventEmitter from 'events';
 import { generate } from 'shortid';
@@ -7,7 +7,7 @@ import { generate } from 'shortid';
 /**
  * Clones an object with stringify to JSON and returning the parsed result.
  */
-function clone(o) { return JSON.parse(JSON.stringify(o)) }
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
 
 /**
@@ -38,19 +38,21 @@ export class Mediator extends EventEmitter {
     }
 
     Object.defineProperty(this, 'refs', {
-      get: function() { return this._refs.values(); }
-    })
+      get() {
+        return this._refs.values();
+      }
+    });
 
     for(let prop in this._data) {
       Object.defineProperty(this, prop,
         {
-          get: function() { return this._get(prop); },
-          set: function(value) { this._set(prop, value); }
+          get() { return this._get(prop); },
+          set(value) { this._set(prop, value); }
         });
     }
   }
 
-  get _id() { return this._data['model'] + ':' + this._data['id'] }
+  get _id() { return this._data['model'] + ':' + this._data['id']; }
 
   /**
    * Getter method that is aware references.
@@ -81,12 +83,12 @@ export class Mediator extends EventEmitter {
       cur = this._refs.get(this._data[prop]);
       if (cur) { this._refs.delete(this._data[prop]); }
       this._refs.set(value._id, value);
-      this._data[prop] = value._id
+      this._data[prop] = value._id;
     } else {
-      cur = this._data[prop]
-      this._data[prop] = value
+      cur = this._data[prop];
+      this._data[prop] = value;
     }
-    this.emit('changed', this, {prop: prop, old: cur});
+    this.emit('changed', this, {prop, old: cur});
   }
 
   /**

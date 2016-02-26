@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import { assert } from 'chai';
 
@@ -12,12 +12,12 @@ describe('Mediator', function() {
     data = {id: 'testid', model: 'testmodel', prop: 'value'};
     m1 = new Mediator(data);
     m2 = new Mediator(data);
-    fooman = new Human("fooman");
+    fooman = new Human('fooman');
     brain = new Brain();
-  })
+  });
   it('should have getters for the underlying data object', function () {
     assert.equal(m1.prop, data.prop);
-    assert.equal(fooman.name, "fooman");
+    assert.equal(fooman.name, 'fooman');
     assert.equal(fooman.brain, null);
   });
   it('should only contains data that came in plus model and id', function () {
@@ -27,13 +27,13 @@ describe('Mediator', function() {
     m1.prop = 'changed';
     assert.equal(m1.prop, 'changed');
     fooman.brain = brain;
-    assert(fooman.brain, "no brain!");
-    assert.equal(fooman.brain.think(), "ARGH!");
+    assert(fooman.brain, 'no brain!');
+    assert.equal(fooman.brain.think(), 'ARGH!');
   });
   it('can be constructed with references to a single mediator.', function() {
     let brainz = new Brain();
-    let humanz = new Human("humanz!", brainz);
-    assert(humanz.brain, "no brain!");
+    let humanz = new Human('humanz!', brainz);
+    assert(humanz.brain, 'no brain!');
     assert.equal(humanz._data['brain'],brainz._id);
     for (let ref of humanz.refs) {
       assert.equal(ref, brainz);
@@ -41,8 +41,8 @@ describe('Mediator', function() {
   });
   it('can be constructed with references to a list of mediators object.', function() {
     let brainz = new Brain();
-    let humanz = new Human("humanz!", brainz);
-    assert(humanz.brain, "no brain!");
+    let humanz = new Human('humanz!', brainz);
+    assert(humanz.brain, 'no brain!');
     assert.equal(humanz._data['brain'],brainz._id);
     for (let ref of humanz.refs) {
       assert.equal(ref, brainz);
@@ -70,7 +70,7 @@ describe('Mediator', function() {
     assert.equal(brain._id, 'brain:' + brain.id);
     let m3 = new Mediator({id:'cheated'});
     assert.equal(m3._id, 'default:cheated');
-  })
+  });
 
   it('should fire "changed" on change', function(done) {
     var errTimeout = setTimeout(function () {
@@ -78,7 +78,7 @@ describe('Mediator', function() {
       done();
     }, 1000);
 
-    m1.on('changed', function(m, data){
+    m1.on('changed', function(m, data) {
       clearTimeout(errTimeout);
       assert.equal(m.prop, 'changed');
       assert.equal(data.prop, 'prop');
@@ -101,7 +101,7 @@ describe('Mediator', function() {
       assert(foo.brain);
       assert.equal(data.prop, 'brain');
       assert.equal(data.old, null);
-      assert.equal(foo.brain.think(), "ARGH!");
+      assert.equal(foo.brain.think(), 'ARGH!');
       done();
     });
 
@@ -110,20 +110,20 @@ describe('Mediator', function() {
 
   describe('#toJSON', function() {
     it('should return the data property as json string', function() {
-      var data = {id: 'foo'}
+      var data = {id: 'foo'};
       var m1 = new Mediator(data);
       assert.equal(m1.toJSON(), '{"id":"foo","model":"default"}');
-      data = {id: 'foo', "foo":"bar"}
+      data = {id: 'foo', 'foo':'bar'};
       m1 = new Mediator(data);
       assert.equal(m1.toJSON(), '{"id":"foo","model":"default","foo":"bar"}');
     });
     it('should not include _id', function() {
-      var data = {id: 'foo'}
+      var data = {id: 'foo'};
       var m1 = new Mediator(data);
-      assert.equal(m1.toJSON().indexOf("_id"), -1);
+      assert.equal(m1.toJSON().indexOf('_id'), -1);
     });
     it('should include _id of subclasses, but not the subclass.', function() {
-      fooman.brain = brain
+      fooman.brain = brain;
       assert(JSON.parse(fooman.toJSON()).brain, brain._id);
     });
   });

@@ -1,8 +1,33 @@
-"use strict";
+'use strict';
 
 import EventEmitter from 'events';
 import { Mediator } from './mediator';
 import { Bottom } from './bottom';
+
+
+/**
+ * Those were managed behind the scene by a Bucket.
+ * For each relation between two Mediators there
+ * will be a Junction available.
+ */
+export class Junction extends Mediator {
+  /**
+   * Constructs the junction.
+   *
+   * @param {string|Mediator} from The parent of the Junction.
+   * @param {string|Mediator} to The child of the Junction.
+   */
+  constructor(from, to) {
+    from = (from instanceof Mediator) ? from._id : from;
+    to = (to instanceof Mediator) ? to._id : to;
+    super({
+      model: 'junction',
+      id: from + ':' + to,
+      from,
+      to
+    });
+  }
+}
 
 
 /**
@@ -17,21 +42,21 @@ export class Bucket extends Mediator {
    * of Mediator.
    */
   constructor() {
-      super({
-        model: 'bucket'
-      });
+    super({
+      model: 'bucket'
+    });
       /**
        * @type {Map} The inmemory store for the bucket.
        */
-      this.memory = new Map();
+    this.memory = new Map();
       /**
        * @type {Object} An Map with mediator._id => [list of junction _ids]
        */
-      this.junctions = new Map();
+    this.junctions = new Map();
       /**
        * @type {Map}
        */
-      this.subscribers = new Map();
+    this.subscribers = new Map();
   }
 
   /**
@@ -53,30 +78,30 @@ export class Bucket extends Mediator {
    * provided if you want to receive a result.
    */
   get(_id) {
-      if (typeof _id !== "string") {
-        throw "Must be a string"
-      }
-      return this.memory.get(_id);
+    if (typeof _id !== 'string') {
+      throw 'Must be a string';
+    }
+    return this.memory.get(_id);
   }
 
   /**
    * Adds one or more mediators to the Bucket.
    */
   add(iter) {
-    let mediators = iter[Symbol.iterator] !== undefined ? iter : [iter]
+    let mediators = iter[Symbol.iterator] !== undefined ? iter : [iter];
     for (let mediator of mediators) {
 
       if (!(mediator instanceof Mediator)) {
-        throw "Must be a subclass of Mediator";
+        throw 'Must be a subclass of Mediator';
       }
 
       this._add(mediator);
 
       this.add(mediator.refs);
 
-      let junctions = []
+      let junctions = [];
       for (let referred of mediator.refs) {
-        let junction = new Junction(mediator, referred)
+        let junction = new Junction(mediator, referred);
         junctions.push(junction._id);
         this._add(junction);
       }
@@ -90,20 +115,20 @@ export class Bucket extends Mediator {
    * @emits 'add'
    */
   _add(mediator) {
-      this.memory.set(mediator._id, mediator);
-      if (this.bottom) {
-        if (!this.models.hasOwnProperty(mediator.model)) {
-          console.warn("You have added the model " + mediator.model + " to persistent bucket, that does not know about the class. Reconstruction from Bottom will fail.");
-        }
-        this.bottom.write(mediator);
+    this.memory.set(mediator._id, mediator);
+    if (this.bottom) {
+      if (!this.models.hasOwnProperty(mediator.model)) {
+        console.warn('You have added the model ' + mediator.model + ' to persistent bucket, that does not know about the class. Reconstruction from Bottom will fail.');
       }
+      this.bottom.write(mediator);
+    }
 
       // var me = this;
       // mediator.on("changed", function(mediator, oldData) {
       //   me.memory.set(mediator._id, mediator);
       // });
 
-      this.emit('add', mediator);
+    this.emit('add', mediator);
   }
 
   /**
@@ -113,16 +138,16 @@ export class Bucket extends Mediator {
    * and ids to this method.
    */
   remove(iter) {
-    let mediators = iter[Symbol.iterator] !== undefined ? iter : [iter]
+    let mediators = iter[Symbol.iterator] !== undefined ? iter : [iter];
     for (let mediator of mediators) {
-      if (typeof mediator !== "string" && !(mediator instanceof Mediator)) {
-        throw "Must be a subclass of Mediator or an id." + mediator;
+      if (typeof mediator !== 'string' && !(mediator instanceof Mediator)) {
+        throw 'Must be a subclass of Mediator or an id.' + mediator;
       }
-      let _id = (typeof mediator === "string") ? mediator : mediator._id;
+      let _id = (typeof mediator === 'string') ? mediator : mediator._id;
       this._remove(_id);
       let junctions = this.junctions.get(_id) || [];
       for (let juncId of junctions) {
-        let junc = this.memory.get(juncId)
+        let junc = this.memory.get(juncId);
         this.remove([junc.to, juncId]);
       }
     }
@@ -135,32 +160,7 @@ export class Bucket extends Mediator {
    */
   _remove(_id) {
     this.memory.delete(_id);
-    if (this.bottom) { this.bottom.delete(_id) }
+    if (this.bottom) { this.bottom.delete(_id); }
     this.emit('remove', _id);
-  }
-}
-
-
-/**
- * Those were managed behind the scene by a Bucket.
- * For each relation between two Mediators there
- * will be a Junction available.
- */
-export class Junction extends Mediator {
-  /**
-   * Constructs the junction.
-   *
-   * @param {string|Mediator} from The parent of the Junction.
-   * @param {string|Mediator} to The child of the Junction.
-   */
-  constructor(from, to) {
-    from = (from instanceof Mediator) ? from._id : from;
-    to = (to instanceof Mediator) ? to._id : to;
-    super({
-      model: 'junction',
-      id: from + ':' + to,
-      from: from,
-      to: to
-    })
   }
 }

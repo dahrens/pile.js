@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import { assert } from 'chai';
 import { spy, stub } from 'sinon';
@@ -10,20 +10,20 @@ import { Human, Brain } from 'test/lib/config';
 
 describe('Bucket', function() {
   let bucket,
-      fooman,
-      brain
+    fooman,
+    brain;
   beforeEach(function() {
     bucket = new Bucket();
     brain = new Brain();
-    fooman = new Human("fooman", brain);
+    fooman = new Human('fooman', brain);
   });
 
 
   it('should handle object changes behind the scene', function() {
     bucket.add(fooman);
-    fooman.name = "renamed";
+    fooman.name = 'renamed';
     let reply = bucket.get(fooman._id);
-    assert.equal(reply.name, fooman.name, "bucket still knows the old value");
+    assert.equal(reply.name, fooman.name, 'bucket still knows the old value');
   });
 
 
@@ -38,7 +38,7 @@ describe('Bucket', function() {
       assert.equal(mirror.memory.get(brain._id), bucket.memory.get(brain._id));
       bucket.add(fooman);
       assert.equal(mirror.memory.get(fooman._id), bucket.memory.get(fooman._id));
-      let juncId = 'junction:' + fooman._id + ':' + brain._id
+      let juncId = 'junction:' + fooman._id + ':' + brain._id;
       assert.equal(mirror.memory.get(juncId), bucket.memory.get(juncId));
     });
   });
@@ -58,16 +58,16 @@ describe('Bucket', function() {
     it('should throw an error if obj does not inherit "Mediator"', function() {
       try {
         bucket.add(new Object());
-        assert(false, "there should have been an error!")
-      } catch (e) { assert.equal(e, "Must be a subclass of Mediator") }
+        assert(false, 'there should have been an error!');
+      } catch (e) { assert.equal(e, 'Must be a subclass of Mediator'); }
     });
     it('should add referred mediators and juntions.', function() {
       bucket.add(fooman);
-      assert.equal(bucket.memory.size, 3, "something is missing in da bucket.");
-      assert(bucket.memory.get(fooman._id), "No fooman in bucket.");
-      assert(bucket.memory.get(brain._id), "No brain in the bucket!");
+      assert.equal(bucket.memory.size, 3, 'something is missing in da bucket.');
+      assert(bucket.memory.get(fooman._id), 'No fooman in bucket.');
+      assert(bucket.memory.get(brain._id), 'No brain in the bucket!');
       assert(bucket.memory.get('junction:' + fooman._id + ':' + brain._id),
-        "No juntion between fooman and his brain in the bucket!");
+        'No juntion between fooman and his brain in the bucket!');
     });
   });
 
@@ -101,19 +101,19 @@ describe('Bucket', function() {
     });
   });
 
-  describe("#get", function() {
-    it("should answer with undefined on unknown id requests", function() {
-      var _id = 'default:notvalid'
+  describe('#get', function() {
+    it('should answer with undefined on unknown id requests', function() {
+      var _id = 'default:notvalid';
       assert(bucket.get(_id) === undefined);
     });
-    it("should resolve objects properly by id", function() {
+    it('should resolve objects properly by id', function() {
       bucket.add(fooman);
       let obj = bucket.get(fooman._id);
       assert.equal(fooman instanceof Human, obj instanceof Human);
       assert.equal(fooman.toJSON(), obj.toJSON());
       assert.equal(fooman, obj);
     });
-  })
+  });
 });
 
 describe('Junction', function() {
@@ -122,7 +122,7 @@ describe('Junction', function() {
     pinky = new Brain();
     brain = new Brain();
     junc = new Junction(pinky, brain);
-  })
+  });
   it('should have an id that is easily reproduceable with ids', function() {
     assert.equal(junc._id, 'junction:' + pinky._id + ':' + brain._id);
   });
@@ -135,5 +135,5 @@ describe('Junction', function() {
     assert.equal(junction._id, 'junction:' + pinky._id + ':' + brain._id);
     assert.equal(junction.from, pinky._id);
     assert.equal(junction.to, brain._id);
-  })
+  });
 });

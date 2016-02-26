@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import { format } from 'util';
 import { Mediator } from 'src/mediator';
@@ -9,8 +9,8 @@ export class Human extends Mediator {
   constructor(name='foobar', brain=null) {
     super({
       model: 'human',
-      name: name,
-      brain: brain
+      name,
+      brain
     });
   }
 
@@ -21,9 +21,9 @@ export class Human extends Mediator {
 
 export class Brain extends Mediator {
   constructor() {
-    super({ model: 'brain' })
+    super({ model: 'brain' });
   }
   think() {
-    return format('ARGH!')
+    return format('ARGH!');
   }
 }

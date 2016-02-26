@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import { createClient } from 'redis';
 import EventEmitter from 'events';
@@ -11,7 +11,7 @@ import { flatten } from './bucket';
  * Base class for Bottoms. We need this atm to test for Bottom class or instance
  */
 export class Bottom extends EventEmitter {
-  constructor(namespace="unknown") {
+  constructor(namespace='unknown') {
     super();
     /**
      * The prefix used for all keys.
@@ -33,23 +33,23 @@ export class RedisBottom extends Bottom {
    *
    * @param {namespace} string The namespace used as prefix for redis.
    */
-  constructor(namespace="unknown") {
+  constructor(namespace='unknown') {
     super(namespace);
     /**
      * @type {RedisClient} node_redis based client to talk to redis.
      */
-    this.client = createClient({prefix: namespace + ":"})
+    this.client = createClient({prefix: namespace + ':'});
   }
 
   /**
    * Converts the given mediator into a hashmap for redis.
    */
   ground(mediator) {
-    let ret = [mediator._id]
+    let ret = [mediator._id];
     for (var prop in mediator._data) {
       ret.push(prop, mediator._data[prop]);
     }
-    return ret
+    return ret;
   }
 
   /**
@@ -66,17 +66,17 @@ export class RedisBottom extends Bottom {
    */
   read(done) {
     var me = this;
-    this.client.keys(this.namespace + '*', function(err, keys) {
-      let async = require("async");
+    this.client.keys(this.namespace + '*', function (err, keys) {
+      let async = require('async');
       let models = new Map();
-      async.each(keys, function(key, cb) {
+      async.each(keys, function (key, cb) {
         let [namespace, model] = key.split(':');
-        let id = key.replace(namespace + ':', '')
-        me.client.hgetall(id, function(err, data) {
-            models.set(id, data);
+        let id = key.replace(namespace + ':', '');
+        me.client.hgetall(id, function (err, data) {
+          models.set(id, data);
           cb();
         });
-      }, function() {
+      }, function () {
         done(models);
       });
     });

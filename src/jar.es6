@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import EventEmitter from 'events';
 import { Mediator } from './mediator';
@@ -18,20 +18,20 @@ export class Jar extends Bucket {
    * of Mediator.
    */
   constructor(namespace='default', models={}, bottom) {
-      super();
+    super();
       /**
        * @type {string} The namespace of the bucket. Used to prefix IDs.
        */
-      this.namespace = namespace
+    this.namespace = namespace;
       /**
        * @type {Object} An object with keys for models and classes as value.
        */
-      this.models = models;
-      this.models['junction'] = Junction;
+    this.models = models;
+    this.models['junction'] = Junction;
       /**
        * @type {Object} A Bottom used for persisting objects somewhere.
        */
-      this.bottom = (bottom instanceof Bottom) ? bottom : new bottom(this.namespace);
+    this.bottom = (bottom instanceof Bottom) ? bottom : new bottom(this.namespace);
   }
 
   /**
@@ -43,11 +43,11 @@ export class Jar extends Bucket {
    * @param {Mediator} cls The class that should be registered.
    */
   register(cls) {
-      let instance = new cls();
-      if (!(instance instanceof Mediator)) {
-        throw "Must be a subclass of Mediator"
-      }
-      this.models[instance.model] = cls
+    let instance = new cls();
+    if (!(instance instanceof Mediator)) {
+      throw 'Must be a subclass of Mediator';
+    }
+    this.models[instance.model] = cls;
   }
 
   /**
@@ -56,7 +56,7 @@ export class Jar extends Bucket {
    * @param {Mediator} cls The class that should be unregistered.
    */
   unregister(cls) {
-      throw "to be done..."
+    throw 'to be done...';
   }
 
   /**
@@ -67,11 +67,11 @@ export class Jar extends Bucket {
    */
   sync(done) {
     let me = this;
-    this.bottom.read(function(content) {
+    this.bottom.read(function (content) {
       let junctions = [];
 
       for (let [id, data] of content.entries()) {
-        let obj = me.restore(id, data)
+        let obj = me.restore(id, data);
         if (id.startsWith('junction:')) {
           junctions.push(obj);
         }
@@ -87,7 +87,7 @@ export class Jar extends Bucket {
           }
         }
       }
-      done(me)
+      done(me);
     });
   }
 
@@ -101,7 +101,7 @@ export class Jar extends Bucket {
   restore(_id, raw_data) {
     let [modelName, modelId] = _id.split(':');
     if (!modelName || !modelId) {
-        throw "No known modelName found in _id: " + _id;
+      throw 'No known modelName found in _id: ' + _id;
     }
     let model = new this.models[modelName];
     for (let prop in raw_data) {

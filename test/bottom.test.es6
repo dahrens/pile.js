@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 import { assert } from 'chai';
 
 import { createClient } from 'redis';
@@ -21,26 +21,26 @@ describe('RedisBottom', function() {
   var redis_cleanup = function(done) {
     test.keys('mocha*', function(err, rows) {
       async.each(rows, function(row, cb) {
-        test.del(row, cb)
+        test.del(row, cb);
       }, done);
     });
-  }
+  };
 
 
   before(function(done) {
     test = createClient();
-    test.on("error", done);
-    test.on("ready", done);
+    test.on('error', done);
+    test.on('ready', done);
   });
   after(redis_cleanup);
 
   let redis_bottom,
-      client,
-      buck,
-      fooman,
-      brain;
+    client,
+    buck,
+    fooman,
+    brain;
   beforeEach(function() {
-    redis_bottom = new RedisBottom("mocha");
+    redis_bottom = new RedisBottom('mocha');
     client = redis_bottom.client;
 
     buck = new Mediator({
@@ -48,20 +48,20 @@ describe('RedisBottom', function() {
       id: 'buck'
     });
     brain = new Brain();
-    fooman = new Human("fooman", brain);
+    fooman = new Human('fooman', brain);
   });
   describe('#ground', function() {
     it('should convert simple objects for usage with redis.hmset', function() {
       let alloy = redis_bottom.ground(buck);
       assert(alloy);
       assert.equal(alloy.length, 5);
-      assert.deepEqual(alloy, ['chicken:buck', 'id', 'buck', 'model', 'chicken'])
+      assert.deepEqual(alloy, ['chicken:buck', 'id', 'buck', 'model', 'chicken']);
     });
     it('should convert objects with refs for usage with redis.hmset', function() {
       let alloy = redis_bottom.ground(fooman);
       assert(alloy);
       assert.equal(alloy.length, 9);
-      assert.deepEqual(alloy, ['human:' + fooman.id, 'id', fooman.id, 'model', 'human', 'name', 'fooman', 'brain', 'brain:' + brain.id])
+      assert.deepEqual(alloy, ['human:' + fooman.id, 'id', fooman.id, 'model', 'human', 'name', 'fooman', 'brain', 'brain:' + brain.id]);
     });
   });
   describe('#write', function() {
@@ -78,15 +78,15 @@ describe('RedisBottom', function() {
       async.each([fooman, brain], function(obj, cb) {
         redis_bottom.write(obj, cb);
       }, function() {
-          async.each([fooman, brain], function(obj, clbac) {
-            client.hgetall(obj._id, function(err, reply) {
-              assert(!err, "an error occured");
-              assert(reply, "no reply");
-              assert.equal(reply.id, obj.id, "wrong id!");
-              assert.equal(reply.model, obj.model, "wrong model!");
+        async.each([fooman, brain], function(obj, clbac) {
+          client.hgetall(obj._id, function(err, reply) {
+              assert(!err, 'an error occured');
+              assert(reply, 'no reply');
+              assert.equal(reply.id, obj.id, 'wrong id!');
+              assert.equal(reply.model, obj.model, 'wrong model!');
               clbac();
             });
-        }, done)
+        }, done);
       });
     });
   });
@@ -108,14 +108,14 @@ describe('RedisBottom', function() {
   });
   describe('#delete', function() {
     beforeEach(function(done) {
-      redis_bottom.write(brain, function(err, reply) { done() });
+      redis_bottom.write(brain, function(err, reply) { done(); });
     });
     it('deletes the hashmap for the given id', function(done) {
       redis_bottom.delete(brain._id);
       client.exists(brain._id, function(err, reply) {
-        assert(reply === 0, "hashmap still exists.");
-        done()
-      })
+        assert(reply === 0, 'hashmap still exists.');
+        done();
+      });
     });
   });
 });
