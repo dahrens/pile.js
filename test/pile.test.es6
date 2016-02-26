@@ -25,7 +25,6 @@ describe('Pile', function() {
     it('should allow you to connect to the nsp', function(done) {
       let client = io_client('ws://localhost:'+PORT+'/'+nsp);
       client.once('hi', function (res) {
-        console.log(res);
         res.nsp.should.equal(nsp);
         res.should.have.property('jars');
         res.jars.should.have.length(1);

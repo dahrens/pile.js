@@ -2,7 +2,8 @@
 
 import EventEmitter from 'events';
 import { Mediator } from './mediator';
-import { Bucket, Junction } from './bucket';
+import { Junction } from './junction';
+import { Bucket } from './bucket';
 import { Bottom } from './bottom';
 
 

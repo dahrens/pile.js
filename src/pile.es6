@@ -1,6 +1,7 @@
 'use strict';
 
 import EventEmitter from 'events';
+import { Bucket } from './bucket';
 import { Jar } from './jar';
 import { RedisBottom } from './bottom';
 
@@ -11,11 +12,12 @@ import { RedisBottom } from './bottom';
 export class Pile extends EventEmitter {
 
   /**
-   * A Pile gets constructed with a namespace string and a http server running
+   * A Pile gets constructed with a namespace string and a (http) server running
    * socket.io. The pile creates it own namespace on the server and starts
    * listening for clients.
    *
    * A Pile itself is not persistent - it relies on data in known jars.
+   * One persistent Jar called default is always available.
    */
   constructor(nsp, server) {
     super();
@@ -31,7 +33,11 @@ export class Pile extends EventEmitter {
       socket.on('disconnect', function () {
         clients.delete(socket.id);
       });
-      socket.emit('hi', {nsp, jars: Array.from(jars.keys())});
+      socket.emit('hi', {
+        nsp,
+        jars: Array.from(jars.keys()),
+        clients: Array.from(clients.keys())
+      });
     });
     this.clients = clients;
     this.jars = jars;

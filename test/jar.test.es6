@@ -3,7 +3,7 @@
 import { assert } from 'chai';
 import { spy, stub, createStubInstance } from 'sinon';
 
-import { Junction } from 'src/bucket';
+import { Junction } from 'src/junction';
 import { Jar } from 'src/jar';
 import { Bottom } from 'src/bottom';
 import { Human, Brain } from 'test/lib/config';
