@@ -6,8 +6,6 @@ import { Mediator } from 'src/mediator';
 import { Human, Brain } from 'test/lib/config';
 
 
-
-
 describe('Mediator', function() {
   var data, m1, m2, fooman, brain;
   beforeEach(function() {
@@ -32,7 +30,16 @@ describe('Mediator', function() {
     assert(fooman.brain, "no brain!");
     assert.equal(fooman.brain.think(), "ARGH!");
   });
-  it('can be constructed with references.', function() {
+  it('can be constructed with references to a single mediator.', function() {
+    let brainz = new Brain();
+    let humanz = new Human("humanz!", brainz);
+    assert(humanz.brain, "no brain!");
+    assert.equal(humanz._data['brain'],brainz._id);
+    for (let ref of humanz.refs) {
+      assert.equal(ref, brainz);
+    }
+  });
+  it('can be constructed with references to a list of mediators object.', function() {
     let brainz = new Brain();
     let humanz = new Human("humanz!", brainz);
     assert(humanz.brain, "no brain!");

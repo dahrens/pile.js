@@ -7,12 +7,14 @@ import { Mediator } from './mediator';
 import { flatten } from './bucket';
 
 
-
-
 /**
  * Base class for Bottoms. We need this atm to test for Bottom class or instance
  */
-export class Bottom extends EventEmitter { }
+export class Bottom extends EventEmitter {
+  write() {}
+  read() {}
+  delete() {}
+}
 
 
 /**
