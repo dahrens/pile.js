@@ -120,7 +120,6 @@ describe('Jar', function() {
       brain = new Human("pinkbrain", pinky);
       pinkbrain = new Junction(brain, pinky);
       class FakedBottom extends Bottom {
-        get namespace() { return 'mocha' }
         read(cb) {
           let content = new Map();
           content.set(pinky._id, pinky._data);
@@ -129,7 +128,7 @@ describe('Jar', function() {
           cb(content);
         }
       }
-      new_bottom = new FakedBottom()
+      new_bottom = new FakedBottom('mocha')
       empty_jar = new Jar('mocha', {
         'brain': Brain,
         'human': Human

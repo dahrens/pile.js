@@ -11,6 +11,13 @@ import { flatten } from './bucket';
  * Base class for Bottoms. We need this atm to test for Bottom class or instance
  */
 export class Bottom extends EventEmitter {
+  constructor(namespace="unknown") {
+    super();
+    /**
+     * The prefix used for all keys.
+     */
+    this.namespace = namespace;
+  }
   write() {}
   read() {}
   delete() {}
@@ -21,18 +28,13 @@ export class Bottom extends EventEmitter {
  * Persists objects into redis.
  */
 export class RedisBottom extends Bottom {
-
   /**
    * Constructs a new RedisBottom.
    *
    * @param {namespace} string The namespace used as prefix for redis.
    */
   constructor(namespace="unknown") {
-    super();
-    /**
-     * The prefix used for all keys.
-     */
-    this.namespace = namespace;
+    super(namespace);
     /**
      * @type {RedisClient} node_redis based client to talk to redis.
      */
