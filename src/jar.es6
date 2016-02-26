@@ -111,4 +111,18 @@ export class Jar extends Bucket {
     return model;
   }
 
+  _add(mediator) {
+    super._add(mediator);
+    if (!this.models.hasOwnProperty(mediator.model)) {
+      console.warn('You have added the model ' + mediator.model + ' to a jar,' +
+      'that does not know about the class. Reconstruction will fail.');
+    }
+    this.bottom.write(mediator);
+  }
+
+  _remove(_id) {
+    super._remove(_id);
+    if (this.bottom) { this.bottom.delete(_id); }
+  }
+
 }

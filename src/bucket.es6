@@ -19,7 +19,8 @@ export class Bucket extends Mediator {
    */
   constructor() {
     super({
-      model: 'bucket'
+      model: 'bucket',
+      items: []
     });
       /**
        * @type {Map} The inmemory store for the bucket.
@@ -92,18 +93,7 @@ export class Bucket extends Mediator {
    */
   _add(mediator) {
     this.memory.set(mediator._id, mediator);
-    if (this.bottom) {
-      if (!this.models.hasOwnProperty(mediator.model)) {
-        console.warn('You have added the model ' + mediator.model + ' to persistent bucket, that does not know about the class. Reconstruction from Bottom will fail.');
-      }
-      this.bottom.write(mediator);
-    }
-
-      // var me = this;
-      // mediator.on("changed", function(mediator, oldData) {
-      //   me.memory.set(mediator._id, mediator);
-      // });
-
+    this.items.push(mediator._id);
     this.emit('add', mediator);
   }
 
@@ -136,7 +126,6 @@ export class Bucket extends Mediator {
    */
   _remove(_id) {
     this.memory.delete(_id);
-    if (this.bottom) { this.bottom.delete(_id); }
     this.emit('remove', _id);
   }
 }
