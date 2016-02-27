@@ -6,16 +6,46 @@
   "eslintConfig": {
     "parser": "babel-eslint",
     "rules": {
-        "indent": [2, 2],
-        "quotes": [2, "single"],
-        "linebreak-style": [2, "unix"],
-        "semi": [2, "always"],
-        "no-underscore-dangle": 0,
-        "no-use-before-define": [2, "nofunc"],
-        "spaced-comment": [2, "always"],
-        "space-before-blocks": [2, "always"],
-        "semi-spacing": [2, {"before": false, "after": true}],
-        "object-shorthand": [2, "always"]
+      "indent": [
+        2,
+        2
+      ],
+      "quotes": [
+        2,
+        "single"
+      ],
+      "linebreak-style": [
+        2,
+        "unix"
+      ],
+      "semi": [
+        2,
+        "always"
+      ],
+      "no-underscore-dangle": 0,
+      "no-use-before-define": [
+        2,
+        "nofunc"
+      ],
+      "spaced-comment": [
+        2,
+        "always"
+      ],
+      "space-before-blocks": [
+        2,
+        "always"
+      ],
+      "semi-spacing": [
+        2,
+        {
+          "before": false,
+          "after": true
+        }
+      ],
+      "object-shorthand": [
+        2,
+        "always"
+      ]
     },
     "env": {
       "browser": true,
@@ -39,6 +69,7 @@
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "chai": "^3.5.0",
+    "coveralls": "^2.11.8",
     "esdoc": "^0.4.3",
     "eslint": "^2.2.0",
     "grunt": "^0.4.5",
@@ -60,7 +91,7 @@
   "scripts": {
     "test": "grunt test",
     "compile": "grunt build",
-    "coverage": "./node_modules/.bin/babel-node ./node_modules/istanbul/lib/cli.js cover ./node_modules/.bin/_mocha -- 'test/**/*.es6' --require test/lib/bootstrap",
+    "coveralls": "./node_modules/.bin/babel-node ./node_modules/istanbul/lib/cli.js cover ./node_modules/.bin/_mocha -- 'test/**/*.es6' --require test/lib/bootstrap && cat ./doc/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "prepublish": "npm run compile"
   },
   "files": [
