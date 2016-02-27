@@ -1,5 +1,7 @@
 # pile.js
 
+[![Build Status](https://travis-ci.org/dahrens/pile.js.svg?branch=master)](https://travis-ci.org/dahrens/pile.js)
+
 A distributed helper to set up a domain driven architecture
 that can be shared between different environments.
 
