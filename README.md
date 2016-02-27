@@ -6,6 +6,8 @@
 A distributed helper to set up a domain driven architecture
 that can be shared between different environments.
 
+**NOTE: Currently this package is under development and not really usable.**
+
 ## usage
 
 pile.js aims to support the synchronization of objects.
@@ -55,12 +57,6 @@ bucket.add(foo);
 
 // the mirror contains our foo.
 assert.equal(mirror.get(foo._id), foo);
-
-// recreate
-new Bucket("humans", models, RedisBottom).sync(function(recreated) {
-  // recreated bottoms with the same name contain everything from storage.
-  assert.equal(recreated.get(foo._id), foo);
-})
 
 ```
 
