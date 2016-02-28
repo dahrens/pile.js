@@ -69,7 +69,7 @@ npm i
 grunt dev  # starts a watch task for eslint, babel, mocha and esdoc
 ```
 
-### Using vagrant
+### vagrant
 
 ```bash
 vagrant up
@@ -80,8 +80,13 @@ grunt dev
 vagrant rsync-auto
 ```
 
-* debian/jessie64 relies on rsync instead of shared folders, use `vagrant rsync` and `vagrant rsync-auto` - this also helps to avoid problems with symlinks made by npm.
-* git can't be used inside of the box, as .git is not synced.
+As debian/jessie64, this Vagrantfile relies on rsync for shared folders.
+This helps us to avoid problems with npm, symlinks and vbox.
+The following might be interesting when using this box:
+
+* use `vagrant rsync` and `vagrant rsync-auto` to stay in sync!
+* installing new npm packages in the box does not affect package.json on host! added them manually to package.json!
+* git can't be used inside of the box, as .git is not present in the box.
 * The box is provisioned using salt.
  * Have a look at `.saltstack` for provisioning.
  * Run `sudo salt-call state.highstate` inside of the box if something went wrong and you want to see whats going on.

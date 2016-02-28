@@ -26,6 +26,6 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.synced_folder ".", "/vagrant", type: "rsync",
-    rsync__exclude: [".git/", ".saltstack", "node_modules", "doc", "lib"]
+    rsync__exclude: [".git/", ".saltstack", "node_modules", "doc"]
 
 end

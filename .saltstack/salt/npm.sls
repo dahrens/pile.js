@@ -1,5 +1,10 @@
 grunt-cli:
-  npm.installed
+  npm.installed:
+    require:
+      - sls: node
+
 
 /vagrant:
-  npm.bootstrap
+  npm.bootstrap:
+    require:
+      - pkg: grunt-cli
