@@ -60,16 +60,28 @@ assert.equal(mirror.get(foo._id), foo);
 
 ```
 
-## contribute
+## development
 
-```
-git clone https://github.com/dahrens/pile.js.git
-cd pile.js
+You need nodejs 5.x and a running redis server. For running tasks grunt is used.
+
+```bash
 npm i
+grunt dev  # starts a watch task for eslint, babel, mocha and esdoc
 ```
 
-### develop
+### Using vagrant
 
+```bash
+vagrant up
+vagrant ssh
+cd /vagrant
+grunt dev
+# open another terminal on the host machine
+vagrant rsync-auto
 ```
-grunt develop
-```
+
+* debian/jessie64 relies on rsync instead of shared folders, use `vagrant rsync` and `vagrant rsync-auto` - this also helps to avoid problems with symlinks made by npm.
+* git can't be used inside of the box, as .git is not synced.
+* The box is provisioned using salt.
+ * Have a look at `.saltstack` for provisioning.
+ * Run `sudo salt-call state.highstate` inside of the box if something went wrong and you want to see whats going on.

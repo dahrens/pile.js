@@ -1,0 +1,12 @@
+state_verbose: True
+
+file_client: local
+
+gitfs_provider: gitpython
+
+fileserver_backend:
+  - roots
+  - git
+
+gitfs_remotes:
+  - https://github.com/saltstack-formulas/node-formula.git
