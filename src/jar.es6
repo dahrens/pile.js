@@ -56,9 +56,9 @@ export class Jar extends Bucket {
    *
    * @param {Mediator} cls The class that should be unregistered.
    */
-  unregister(cls) {
-    throw 'to be done...';
-  }
+  // unregister(cls) {
+  //   throw 'to be done...';
+  // }
 
   /**
    * Synchronizes the Bucket with its Bottom. This is called after creation

@@ -74,5 +74,5 @@ module.exports = function(grunt) {
   grunt.registerTask('lint', ['shell:lint']);
   grunt.registerTask('build', ['babel', 'esdoc', 'test']);
   grunt.registerTask('doc', ['esdoc']);
-  grunt.registerTask('dev', ['watch']);
+  grunt.registerTask('dev', ['watch:test', 'watch:lint']);
 };

@@ -5,12 +5,6 @@ import { generate } from 'shortid';
 
 
 /**
- * Clones an object with stringify to JSON and returning the parsed result.
- */
-function clone(o) { return JSON.parse(JSON.stringify(o)); }
-
-
-/**
  * Mediators know how to persist their data into JSON.
  *
  * @emits 'changed' with (mediatorObj, eventData={prop: 'thePropName', old: oldValue})
@@ -81,7 +75,6 @@ export class Mediator extends EventEmitter {
     let cur;
     if (value instanceof Mediator) {
       cur = this._refs.get(this._data[prop]);
-      if (cur) { this._refs.delete(this._data[prop]); }
       this._refs.set(value._id, value);
       this._data[prop] = value._id;
     } else {

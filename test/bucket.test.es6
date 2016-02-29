@@ -31,15 +31,19 @@ describe('Bucket', function() {
     var mirror;
     beforeEach(function() {
       mirror = new Bucket('mirror');
-    });
-    it('should allow buckets the subscription.', function() {
       bucket.subscribe(mirror);
       bucket.add(brain);
-      assert.equal(mirror.memory.get(brain._id), bucket.memory.get(brain._id));
       bucket.add(fooman);
+    });
+    it('should synchronize add events', function() {
+      assert.equal(mirror.memory.get(brain._id), bucket.memory.get(brain._id));
       assert.equal(mirror.memory.get(fooman._id), bucket.memory.get(fooman._id));
       let juncId = 'junction:' + fooman._id + ':' + brain._id;
       assert.equal(mirror.memory.get(juncId), bucket.memory.get(juncId));
+    });
+    it('should synchronize remove events', function() {
+      bucket.remove(brain);
+      assert.equal(mirror.memory.get(brain._id), undefined, "was not removed");
     });
   });
 
@@ -99,6 +103,17 @@ describe('Bucket', function() {
       assert(!bucket.memory.get(brain._id));
       assert(!bucket.memory.get('junction:'+fooman._id+':'+brain._id));
     });
+    it('should throw an error on wrong datatypes', function() {
+      assert.throws(function() {
+        bucket.remove(4)
+      })
+      assert.throws(function() {
+        bucket.remove(new Object)
+      })
+      assert.throws(function() {
+        bucket.remove([3, new Object])
+      })
+    })
   });
 
   describe('#get', function() {
@@ -113,6 +128,11 @@ describe('Bucket', function() {
       assert.equal(fooman.toJSON(), obj.toJSON());
       assert.equal(fooman, obj);
     });
+    it('should only accept strings', function() {
+      assert.throws(function() {
+          bucket.get(new Object);
+      })
+    })
   });
 
   describe('#toJSON', function() {

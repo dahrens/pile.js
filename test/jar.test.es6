@@ -67,10 +67,10 @@ describe('Jar', function() {
     });
     it('should fail on unknown models', function() {
       assert.throws(function() {
-        bucket.restore('unknown:id', {});
+        jar.restore('unknown:id', {});
       });
       assert.throws(function() {
-        bucket.restore('unknown-id', {});
+        jar.restore('unknownid', {});
       });
     });
   });

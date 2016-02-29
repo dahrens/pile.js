@@ -104,7 +104,7 @@ export class Bucket extends Mediator {
    * and ids to this method.
    */
   remove(iter) {
-    let mediators = iter[Symbol.iterator] !== undefined ? iter : [iter];
+    let mediators = iter[Symbol.iterator] !== undefined && typeof iter !== "string" ? iter : [iter];
     for (let mediator of mediators) {
       if (typeof mediator !== 'string' && !(mediator instanceof Mediator)) {
         throw 'Must be a subclass of Mediator or an id.' + mediator;
