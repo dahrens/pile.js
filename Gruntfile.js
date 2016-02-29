@@ -72,7 +72,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', ['shell:test']);
   grunt.registerTask('lint', ['shell:lint']);
-  grunt.registerTask('build', ['babel']);
+  grunt.registerTask('build', ['babel', 'esdoc', 'test']);
   grunt.registerTask('doc', ['esdoc']);
   grunt.registerTask('dev', ['watch']);
 };

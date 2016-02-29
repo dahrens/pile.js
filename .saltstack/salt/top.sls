@@ -1,5 +1,3 @@
 base:
   '*':
-    - redis
-    - node
-    - npm
+    - pile

@@ -9,6 +9,7 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder ".saltstack/salt/", "/srv/salt/", type: "rsync"
   config.vm.synced_folder ".saltstack/pillar/", "/srv/pillar/", type: "rsync"
 
+  # install those to be able to use gitfs for node formula
   config.vm.provision :shell, :inline => "sudo apt-get -y install git-core"
   config.vm.provision :shell, :inline => "sudo apt-get -y install python-setuptools"
   config.vm.provision :shell, :inline => "sudo easy_install GitPython"
@@ -23,9 +24,13 @@ Vagrant.configure(2) do |config|
     salt.masterless = true
     salt.minion_config = ".saltstack/minion"
     salt.run_highstate = true
+    salt.verbose = true
   end
 
+  # sync working dir; ignore folders that were created by node and grunt
   config.vm.synced_folder ".", "/vagrant", type: "rsync",
     rsync__exclude: [".git/", ".saltstack", "node_modules", "doc"]
 
+  # forward nginx serving the documentation and coverage report to host
+  config.vm.network "forwarded_port", guest:80, host:8888, host_ip:"localhost"
 end
